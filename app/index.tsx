@@ -1,4 +1,5 @@
 
+import { Link } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
@@ -39,7 +40,6 @@ export default function Groups() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-
             <View style={{ flex: 1, padding: 16 }}>
                 <TextInput
                     onChangeText={(text) => setText(text)}
@@ -63,11 +63,11 @@ export default function Groups() {
                         <View>
                             <Surface style={{ elevation: 20, borderRadius: 12, margin: 4, padding: 8 }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    {/* <Link href={`/group/${item.id}`}>
+                                    <Link href={`/group/${item.id}`}>
                                         <Text variant="headlineSmall" style={{ color: 'blue' }}>
                                             {item.name}
                                         </Text>
-                                    </Link> */}
+                                    </Link>
                                     <Text variant="bodyMedium"
                                     > {new Date(item.created).toLocaleDateString()} </Text>
                                     <Button

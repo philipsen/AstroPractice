@@ -6,6 +6,7 @@ import { SQLiteDatabase } from "expo-sqlite";
 import { Alert } from "react-native";
 import { GroupEntity } from "../models/GroupEntity";
 import { ObservationEntity } from "../models/ObservationEntity";
+import { getErrorMessage } from "./Utilities";
 export async function exportAllData(db: SQLiteDatabase) {
   try {
     // Get all groups
@@ -56,12 +57,6 @@ export async function exportAllData(db: SQLiteDatabase) {
       `Failed to export data: ${getErrorMessage(error)}`,
     );
   }
-}
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  if (typeof error === "string") return error;
-  return "An unknown error occurred";
 }
 
 export async function importAllData(db: SQLiteDatabase) {
