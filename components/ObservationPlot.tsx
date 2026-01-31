@@ -12,7 +12,7 @@ import Svg, {
 import { SetPosition } from '../helpers/astron/Astron';
 import { Calc, GetGha, GetReductionCorrections, SetObservationData } from '../helpers/astron/init';
 import { CalcAssumedPosition } from '../helpers/CalcAssumedPosition';
-import { ObservationEntity } from '../models/observationEntity';
+import { ObservationEntity } from '../models/ObservationEntity';
 
 type Tick = { value: number; major?: boolean };
 
@@ -119,12 +119,11 @@ const ObservationPlot: React.FC<ObservationPlotProps> = ({
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ width: size, height: size, backgroundColor: 'white' }}>
       <Svg 
         width="100%"
         height="100%"
         viewBox={`0 0 ${size} ${size}`}
-        preserveAspectRatio="xMidYMid meet"
 >
         {/* Background */}
         {/* <Rect x={0} y={0} width={size} height={size} fill="#fff" /> */}

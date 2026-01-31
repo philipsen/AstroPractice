@@ -1,3 +1,4 @@
+import ObservationPlot from "@/components/ObservationPlot";
 import { ObservationEntity } from "@/models/ObservationEntity";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
@@ -5,8 +6,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { FAB, Surface, Switch, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import ObservationPlot from "../../components/ObservationPlot2";
-// import Zoomable from "../../components/Zoomable";
 import { Degs_f } from "../../helpers/astron/Astron";
 
 export default function Chart() {
@@ -61,12 +60,9 @@ export default function Chart() {
         </View>
       ) : (
         <>
-          <View style={{ flex: 1, padding: 16, marginTop: 20 }}>
-            {/* <Zoomable contentWidth={400} contentHeight={400} minScale={1} maxScale={4} doubleTapScale={2.5}>
+          <View style={{ flex: 1, padding: 16, marginTop: 20 }}>          
               <ObservationPlot observations={selectedObservationsList} />
-            </Zoomable> */}
           </View>
-
           <View style={{ position: 'absolute', bottom: 16, right: 60, left: 60, maxHeight: 300 }}>
             <ScrollView style={{ borderRadius: 8, padding: 8 }}>
               {observations.map((observation, index) => (

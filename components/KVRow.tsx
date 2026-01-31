@@ -13,21 +13,18 @@ function KVRow({
     <View style={{ flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center', 
-    marginVertical: 4 ,
+    marginVertical: 4,
     marginRight: 10,
     marginStart: 10,}}>
-      <Text
-      >
+      <Text>
         {label}
       </Text>
-      <Text
-        >
+      <Text>
         {value}
       </Text>
     </View>
   );
 }
-
 
 function KVRow3({
   label,
