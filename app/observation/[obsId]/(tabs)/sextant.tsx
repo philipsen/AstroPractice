@@ -10,7 +10,6 @@ import { getObservation } from '../../../../helpers/ObservationRepository';
 
 export default function SextantCorrections() {
     const obsId = Number(useLocalSearchParams().obsId);
-    console.log("SextantCorrections obsId =", obsId);
     const router = useRouter();
     const db = useSQLiteContext();
     const obs = getObservation(db, Number(obsId));

@@ -20,7 +20,6 @@ const bodyNames = BODY_NAMES;
 
 export default function ObservationEdit() {
     const id = Number(useLocalSearchParams().obsId);
-    console.log("ObservationEdit render id =", id);
 
     const db = useSQLiteContext();
     const obs = useMemo(() => getObservation(db, Number(id)), [db, id]);
