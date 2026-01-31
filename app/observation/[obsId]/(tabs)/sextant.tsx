@@ -1,10 +1,10 @@
-
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import React from 'react';
 import { View } from 'react-native';
-// import SextantCorrectionsSummary, { CorrectionsInput } from '../../../../components/SextantCorrectionsSummary';
-import { GetSextantCorrections } from '../../../../helpers/astron/init';
+import { FAB } from 'react-native-paper';
+import SextantCorrectionsSummary, { CorrectionsInput } from '../../../../components/SextantCorrectionsSummary';
+import { GetSextantCorrections, SetObservationData } from '../../../../helpers/astron/init';
 import { getObservation } from '../../../../helpers/ObservationRepository';
 
 
@@ -14,16 +14,16 @@ export default function SextantCorrections() {
     const router = useRouter();
     const db = useSQLiteContext();
     const obs = getObservation(db, Number(obsId));
-    // SetObservationData(obs);
+    SetObservationData(obs);
 
     const corrections = GetSextantCorrections();
-    // const data: CorrectionsInput = {
-    //     observation: obs,
-    //     corrections: corrections,
-    // };
+    const data: CorrectionsInput = {
+        observation: obs,
+        corrections: corrections,
+    };
     return (
         <View style={{ flex: 1 }}>
-            {/* <SextantCorrectionsSummary
+            <SextantCorrectionsSummary
                 data={data}
             />
             <FAB
@@ -32,7 +32,7 @@ export default function SextantCorrections() {
                 onPress={() => {
                     router.back();
                 }}
-            /> */}
+            />
         </View>
     );
 }
