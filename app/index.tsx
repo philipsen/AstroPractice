@@ -5,9 +5,9 @@ import { FlatList, View } from 'react-native';
 import { Button, FAB, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InitAstron from '../helpers/astron/init';
-import { addGroupAsync, deleteGroupAsync } from '../helpers/groupRepository';
-import { exportAllData, importAllData } from '../helpers/importExport';
-import { GroupEntity } from '../models/groupEntity';
+import { addGroupAsync, deleteGroupAsync } from '../helpers/GroupRepository';
+import { exportAllData, importAllData } from '../helpers/ImportExport';
+import { GroupEntity } from '../models/GroupEntity';
 
 
 InitAstron();

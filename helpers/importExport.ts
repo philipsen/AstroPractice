@@ -4,8 +4,8 @@ import { documentDirectory } from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { SQLiteDatabase } from "expo-sqlite";
 import { Alert } from "react-native";
-import { GroupEntity } from "../models/groupEntity";
-import { ObservationEntity } from "../models/observationEntity";
+import { GroupEntity } from "../models/GroupEntity";
+import { ObservationEntity } from "../models/ObservationEntity";
 export async function exportAllData(db: SQLiteDatabase) {
   try {
     // Get all groups
