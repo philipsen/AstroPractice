@@ -124,7 +124,7 @@ export default function ObservationEdit() {
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <UTCDateTimePicker
                         value={myDate}
-                        onChange={(d) => setMyDate(d)}
+                        onChange={(d: any) => setMyDate(d)}
                     />
                     <TextInput
                         mode="outlined"
@@ -223,7 +223,7 @@ export default function ObservationEdit() {
                             placeholder="Select limb"
                             options={limbTypeOptions}
                             value={limb.toString()}
-                            onSelect={setLimb}
+                            onSelect={limb => setLimb(limb ?? "lower")}
                         />
                     </View>
                     <View style={{ margin: 5 }}>
