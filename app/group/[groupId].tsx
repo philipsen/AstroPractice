@@ -1,5 +1,3 @@
-import { getLatestObservation, newObservation, updateLocation } from '@/helpers/ObservationRepository';
-import { ObservationEntity } from '@/models/ObservationEntity';
 import * as Location from 'expo-location';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
@@ -7,10 +5,10 @@ import { useCallback, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
 import { FAB, IconButton, Surface, Text } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { DegsFormat } from '../../helpers/astron/init';
-
-
+import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../helpers/ObservationRepository';
+import { getErrorMessage } from '../../helpers/Utilities';
+import { ObservationEntity } from '../../models/ObservationEntity';
 
 export default function Group() {
     const groupId = Number(useLocalSearchParams().groupId);
@@ -52,7 +50,7 @@ export default function Group() {
                 setErrorMsg(null); // Clear any previous errors
             } catch (error) {
                 console.error('Location error:', error);
-                setErrorMsg(`Location unavailable: ${get}`);
+                setErrorMsg(`Location unavailable: ${getErrorMessage(error)}`);
             }
         }
         getCurrentLocation();
@@ -68,9 +66,6 @@ export default function Group() {
             });
         }
         refetch();
-
-
-
     }, [db, groupId]);
 
     useFocusEffect(
@@ -110,10 +105,7 @@ export default function Group() {
                 icon="map"
                 size="small"
                 style={{ position: 'absolute', margin: 16, right: 10, bottom: 0 }}
-                onPress={() => {
-                    console.log("Go to map for group ", groupId);
-                    router.push(`/chart/${groupId}`);
-                }}
+                onPress={() => { router.push(`/chart/${groupId}`) }}    
             />
             <FAB
                 icon="plus"
@@ -122,16 +114,13 @@ export default function Group() {
                 onPress={async () => {
                     const observationId = await addObservation(location)
                     router.push(`/observation/${observationId}`)
-
                 }}
             />
             <FAB
                 icon="arrow-left"
                 size="small"
                 style={{ position: 'absolute', margin: 16, left: 10, bottom: 0 }}
-                onPress={() => {
-                    router.back();
-                }}
+                onPress={() => router.back()}
             />
         </SafeAreaView>
     );

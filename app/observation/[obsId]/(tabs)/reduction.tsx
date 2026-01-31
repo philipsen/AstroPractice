@@ -3,10 +3,10 @@ import { useSQLiteContext } from "expo-sqlite";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { FAB } from "react-native-paper";
+import ReductionSummary from "../../../../components/ReductionSummary";
 import { Calc, GetGha, GetReductionCorrections, SetPosition } from "../../../../helpers/astron/init";
 import { CalcAssumedPosition } from "../../../../helpers/CalcAssumedPosition";
 import { getObservation } from "../../../../helpers/ObservationRepository";
-import ReductionSummary from "../../../components/ReductionSummary";
 
 export default function SightReduction() {
     const obsId = Number(useLocalSearchParams().obsId);
