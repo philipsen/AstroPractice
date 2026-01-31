@@ -10,7 +10,6 @@ import { getObservation } from "../../../../helpers/ObservationRepository";
 
 export default function SightReduction() {
     const obsId = Number(useLocalSearchParams().obsId);
-    console.log("SightReduction screen obsId =", obsId);
     const router = useRouter();
 
     const db = useSQLiteContext();

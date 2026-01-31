@@ -13,7 +13,6 @@ export const MaterialTopTabs = withLayoutContext(Navigator);
 export default function TopTabsLayout() {
 
   const observationId = Number(useLocalSearchParams().obsId);
-  console.log("TopTabsLayout render", observationId);
   const db = useSQLiteContext();
   const obs = getObservation(db, Number(observationId));
   SetObservationData(obs);
