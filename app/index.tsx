@@ -95,6 +95,7 @@ export default function Groups() {
                 style={{ position: 'absolute', margin: 16, right: 10, bottom: 0, zIndex: 1000 }}
                 onPress={() => exportAllData(db)}
                 label="Export"
+                size="small"
             />
             <FAB
                 icon="import"
@@ -104,6 +105,7 @@ export default function Groups() {
                     await refetchItems();
                 }}
                 label="Import"
+                size="small"
             />
         </SafeAreaView>
     );

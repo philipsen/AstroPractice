@@ -22,7 +22,7 @@ export default function NSChoice({ value, onChange }: Props) {
     }
     const [val, setVal] = useState(value);
     return (
-        <View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 8, margin: 2, padding: 8, borderWidth: 1, borderRadius: 5, borderColor: '#ccc' }}>
             <Pressable onPress={() => {
                 setVal(toggle(val));
                 onChange(toggle(val));

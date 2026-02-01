@@ -28,7 +28,6 @@ export default function ObservationEdit() {
     const [delay, setDelay] = useState<string>(obs.delay ? obs.delay.toString() : "0");
     const [angle, setAngle] = useState<number>(obs.angle ? obs.angle : 0);
 
-
     const [angleDegrees, setAngleDegrees] = useState<string>(Math.floor(angle).toString());
     const [angleMinutes, setAngleMinutes] = useState<string>((Math.round(60 * (angle - Number(angleDegrees)) * 10) / 10).toString());
 
@@ -110,6 +109,7 @@ export default function ObservationEdit() {
                 onPress={() => {
                     router.back();
                 }}
+                size="small"
             />
             <FAB
                 icon="content-save"
@@ -118,6 +118,7 @@ export default function ObservationEdit() {
                     updateObservation();
                     router.back();
                 }}
+                size="small"
             />
             <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -130,7 +131,7 @@ export default function ObservationEdit() {
                         theme={{
                             roundness: 5
                         }}
-                        style={{ margin: 2, width: 80 }}
+                        style={{ margin: 2, width: 80, left: 30 }}
                         dense={true}
                         ref={refDelay}
                         label="Delay"
@@ -215,7 +216,7 @@ export default function ObservationEdit() {
                 </View>
 
                 <View style={{ flexDirection: 'row' }}>
-                    <View style={{ margin: 5 }}>
+                    <View style={{ margin: 2 }}>
                         <Dropdown
                             mode="outlined"
                             label="limb"
@@ -225,7 +226,7 @@ export default function ObservationEdit() {
                             onSelect={limb => setLimb(limb ?? "lower")}
                         />
                     </View>
-                    <View style={{ margin: 5 }}>
+                    <View style={{ margin: 2, flex: .7 }}>
                         <Dropdown
                             mode="outlined"
                             label="body"
@@ -238,7 +239,7 @@ export default function ObservationEdit() {
                             }}
                         />
                     </View>
-                    <View style={{ margin: 5 }}>
+                    <View style={{ margin: 2, flex: .7 }}>
                         <Dropdown
                             mode="outlined"
                             label="horizon"
@@ -254,7 +255,7 @@ export default function ObservationEdit() {
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                     <TextInput
-                        label="lat"
+                        label="latitude"
                         onChangeText={text => setLatitudeDegrees(text)}
                         value={latitudeDegrees}
                         right={
@@ -266,6 +267,10 @@ export default function ObservationEdit() {
                         selectTextOnFocus={latitudeDegreesGate.selectTextOnFocus}
                         onFocus={latitudeDegreesGate.onFocus}
                         onBlur={latitudeDegreesGate.onBlur}
+
+                        mode="outlined"
+                        theme={{ roundness: 5 }}
+                        style={{ margin: 2 }}
                     />
                     <TextInput
                         label=" "
@@ -280,9 +285,14 @@ export default function ObservationEdit() {
                         selectTextOnFocus={latitudeMinutesGate.selectTextOnFocus}
                         onFocus={latitudeMinutesGate.onFocus}
                         onBlur={latitudeMinutesGate.onBlur}
+                        mode="outlined"
+                        theme={{ roundness: 5 }}
+                        style={{ margin: 2 }}
                     />
                     <NSChoice value={nors} onChange={setNors} />
 
+                </View>
+                <View style={{ flexDirection: 'row' }}>
                     <TextInput
                         label="longitude"
                         onChangeText={text => setLongitudeDegrees(text)}
@@ -296,7 +306,9 @@ export default function ObservationEdit() {
                         selectTextOnFocus={longitudeDegreesGate.selectTextOnFocus}
                         onFocus={longitudeDegreesGate.onFocus}
                         onBlur={longitudeDegreesGate.onBlur}
-                    />
+                        mode="outlined"
+                        theme={{ roundness: 5 }}
+                    />  
                     <TextInput
                         label=" "
                         onChangeText={text => setLongitudeMinutes(text)}
@@ -309,6 +321,8 @@ export default function ObservationEdit() {
                         selectTextOnFocus={longitudeMinutesGate.selectTextOnFocus}
                         onFocus={longitudeMinutesGate.onFocus}
                         onBlur={longitudeMinutesGate.onBlur}
+                        mode="outlined"
+                        theme={{ roundness: 5 }}
                     />
                     <NSChoice value={eorw} onChange={setEorw} />
                 </View>
