@@ -1,9 +1,11 @@
+import { updateGroup } from '@/helpers/GroupRepository';
+import { GroupEntity } from '@/models/GroupEntity';
 import * as Location from 'expo-location';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
-import { FAB, IconButton, Surface, Text } from 'react-native-paper';
+import { FAB, IconButton, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DegsFormat } from '../../helpers/astron/init';
 import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../helpers/ObservationRepository';
@@ -14,6 +16,23 @@ export default function Group() {
     const groupId = Number(useLocalSearchParams().groupId);
     const db = useSQLiteContext();
     const [observations, setObservations] = useState<ObservationEntity[]>([]);
+    const [group, setGroup] = useState<GroupEntity>();
+
+    const getGroup = useCallback(async () => {
+        const result = await db.getFirstAsync<GroupEntity>(
+            'SELECT * FROM groups WHERE id = ?',
+            [groupId]
+        );
+        if (result) {
+            setGroup(result);
+        }
+    }, [db, groupId]);
+
+    useFocusEffect(
+        useCallback(() => {
+            getGroup();
+        }, [getGroup])
+    );
 
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -78,7 +97,36 @@ export default function Group() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Text>{location ? `Lat: ${location.coords.latitude}, Lon: ${location.coords.longitude}, Acc: ${location.coords.accuracy?.toFixed(1) ?? 'N/A'}` : errorMsg ? errorMsg : "Fetching location..."}</Text>
+            <View style={{ margin: 16, gap: 8 }}>
+                <Text variant="titleMedium">Group Name</Text>
+                <TextInput
+                    value={group?.name || ''}
+                    onChangeText={async (text) => await setGroup(prev => prev ? { ...prev, name: text } : undefined)}
+                    mode="outlined"
+                    placeholder="Enter group name"
+                    onBlur={async () => {
+                        if (group) {
+                            await updateGroup(group, db);
+                        }
+                    }}
+                />
+
+                <Text variant="titleMedium">Description</Text>
+                <TextInput
+                    value={group?.description || ''}
+                    onChangeText={async (text) => await setGroup(prev => prev ? { ...prev, description: text } : undefined)}
+                    mode="outlined"
+                    multiline
+                    numberOfLines={3}
+                    placeholder="Enter group description"
+                    onBlur={async () => {
+                        if (group) {
+                            await updateGroup(group, db);
+                        }
+                    }}
+                />
+            </View>
+
             <FlatList
                 data={observations}
                 renderItem={({ item }) =>
@@ -105,7 +153,7 @@ export default function Group() {
                 icon="map"
                 size="small"
                 style={{ position: 'absolute', margin: 16, right: 10, bottom: 0 }}
-                onPress={() => { router.push(`/chart/${groupId}`) }}    
+                onPress={() => { router.push(`/chart/${groupId}`) }}
             />
             <FAB
                 icon="plus"
@@ -121,7 +169,7 @@ export default function Group() {
                 size="small"
                 style={{ position: 'absolute', margin: 16, left: 10, bottom: 0 }}
                 onPress={() => router.back()}
-            />
+            />    
         </SafeAreaView>
     );
 

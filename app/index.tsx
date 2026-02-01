@@ -1,4 +1,5 @@
 
+import { useFocusEffect } from '@react-navigation/native';
 import { Link } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useEffect, useState } from 'react';
@@ -33,7 +34,11 @@ export default function Groups() {
         }
         refetch();
     }, [db]);
-
+    useFocusEffect(
+        useCallback(() => {
+            refetchItems();
+        }, [refetchItems])
+    );
     useEffect(() => {
         refetchItems();
     }, []);
