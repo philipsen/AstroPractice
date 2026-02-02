@@ -20,7 +20,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.zonneklaar_consulting.AtroPractice"
+      "package": "com.zonneklaar_consulting.AstroPractice"
     },
     "web": {
       "output": "static",
