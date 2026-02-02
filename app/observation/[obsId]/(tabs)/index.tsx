@@ -234,7 +234,6 @@ export default function ObservationEdit() {
                             options={bodyNames.map((name, index) => ({ label: name, value: name }))}
                             value={bodyNames[body]}
                             onSelect={(value) => {
-                                console.log("Selected body =", value);
                                 setBody(bodyNames.indexOf(value));
                             }}
                         />
@@ -247,7 +246,6 @@ export default function ObservationEdit() {
                             options={[{ label: 'Natural', value: 'natural' }, { label: 'Artificial', value: 'artificial' }]}
                             value={artificialHorizon ? 'artificial' : 'natural'}
                             onSelect={(value) => {
-                                console.log("Selected horizon =", value);
                                 setArtificialHorizon(value === 'artificial');
                             }}
                         />
