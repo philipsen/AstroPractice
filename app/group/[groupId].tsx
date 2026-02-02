@@ -174,10 +174,10 @@ export default function Group() {
     );
 
     async function addObservation(location: Location.LocationObject | null): Promise<number> {
-        console.log("Add observation to group", groupId)
+        // console.log("Add observation to group", groupId)
         const lastObservation = await getLatestObservation(db, groupId);
         const result = await newObservation(db, groupId, lastObservation);
-        console.log("Added observation with id:", result.lastInsertRowId, location?.coords.latitude, location?.coords.longitude);
+        // console.log("Added observation with id:", result.lastInsertRowId, location?.coords.latitude, location?.coords.longitude);
         if (location) {
             await updateLocation(db, location, result);
         } else {
