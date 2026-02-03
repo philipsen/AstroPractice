@@ -31,8 +31,8 @@ export default function ObservationEdit() {
     const [angleDegrees, setAngleDegrees] = useState<string>(Math.floor(angle).toString());
     const [angleMinutes, setAngleMinutes] = useState<string>((Math.round(60 * (angle - Number(angleDegrees)) * 10) / 10).toString());
 
-    const [indexError, setIndexError] = useState<number>(obs.indexError ? obs.indexError : 0);
-    const [observerAltitude, setObserverAltitude] = useState<number>(obs.observerAltitude ? obs.observerAltitude : 0);
+    const [indexError, setIndexError] = useState<string>(obs.indexError ? obs.indexError.toString() : "0");
+    const [observerAltitude, setObserverAltitude] = useState<string>(obs.observerAltitude ? obs.observerAltitude.toString() : "0");
     const limbTypeOptions = [{ label: 'Lower', value: 'lower' },{ label: 'Center', value: 'center' }, { label: 'Upper', value: 'upper' }];
 
 
@@ -113,7 +113,7 @@ export default function ObservationEdit() {
             />
             <FAB
                 icon="content-save"
-                style={{ position: 'absolute', margin: 16, right: 10, bottom: 0 }}
+                style={{ position: 'absolute', margin: 16, right: 10, top: 0 }}
                 onPress={() => {
                     updateObservation();
                     router.back();
@@ -187,7 +187,7 @@ export default function ObservationEdit() {
                         style={{ margin: 2 }}
                         ref={refIndexError}
                         label="idx err"
-                        onChangeText={text => setIndexError(Number(text))}
+                        onChangeText={text => setIndexError(text)}
                         value={indexError.toString()}
                         returnKeyType="next"
                         onSubmitEditing={() => refHeight.current?.focus()}
@@ -203,8 +203,8 @@ export default function ObservationEdit() {
                         style={{ margin: 2 }}
                         ref={refHeight}
                         label="height"
-                        onChangeText={text => setObserverAltitude(Number(text))}
-                        value={observerAltitude.toString()}
+                        onChangeText={text => setObserverAltitude(text)}
+                        value={observerAltitude}
                         returnKeyType="next"
                         inputMode="decimal"
                         onSubmitEditing={() => refLatitudeDegrees.current?.focus()}
@@ -234,7 +234,6 @@ export default function ObservationEdit() {
                             options={bodyNames.map((name, index) => ({ label: name, value: name }))}
                             value={bodyNames[body]}
                             onSelect={(value) => {
-                                console.log("Selected body =", value);
                                 setBody(bodyNames.indexOf(value));
                             }}
                         />
@@ -247,7 +246,6 @@ export default function ObservationEdit() {
                             options={[{ label: 'Natural', value: 'natural' }, { label: 'Artificial', value: 'artificial' }]}
                             value={artificialHorizon ? 'artificial' : 'natural'}
                             onSelect={(value) => {
-                                console.log("Selected horizon =", value);
                                 setArtificialHorizon(value === 'artificial');
                             }}
                         />
@@ -346,25 +344,13 @@ export default function ObservationEdit() {
                         </View>
                     ))}
                 </View>
-                
-                {/* <IconButton
-                    mode="contained"
-                    icon="content-save"
-                    onPress={() => {
-                        updateObservation();
-                        router.back();
-                    }} /> */}
-
-
-
             </View>
         </SafeAreaView>
     );
 
     async function updateObservation() {
-        const dt2 = myDate; //new Date(dt);
-        console.log("updateObservation called", dt2);
-        // console.log(longitudeDegrees, longitudeMinutes, latitudeDegrees, latitudeMinutes);
+        const dt2 = myDate;
+        // console.log("updateObservation called", dt2);
         const angle = Number(angleDegrees) + Number(angleMinutes) / 60;
         const longitude2 = (eorw === 'E' ? 1 : -1) * (Number(longitudeDegrees) + Number(longitudeMinutes) / 60);
         const latitude2 = (nors === 'N' ? 1 : -1) * (Number(latitudeDegrees) + Number(latitudeMinutes) / 60);
@@ -384,8 +370,8 @@ export default function ObservationEdit() {
             WHERE id = ?;`,
             [
                 angle.toString(),
-                observerAltitude.toString(),
-                indexError.toString(),
+                observerAltitude,
+                indexError,
                 bodyNames[body],
                 latitude2,
                 longitude2,
@@ -396,8 +382,8 @@ export default function ObservationEdit() {
                 id
             ]
         );
-        const obs = getObservation(db, Number(id));
-        console.log("obs = ", obs);
+        // const obs = getObservation(db, Number(id));
+        // console.log("obs = ", obs);
         // router.back();
     }
 

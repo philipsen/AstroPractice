@@ -1,4 +1,3 @@
-
 import { useFocusEffect } from '@react-navigation/native';
 import { Link } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -23,13 +22,15 @@ export default function Groups() {
 
     const refetchItems = useCallback(() => {
         async function refetch() {
-            await db.withExclusiveTransactionAsync(async () => {
-                setGroups(
-                    await db.getAllAsync<GroupEntity>(
-                        'SELECT * FROM groups ORDER BY created DESC;',
-                        []
-                    )
+            const res = await db.withExclusiveTransactionAsync(async () => {
+                const fetchedGroups = await db.getAllAsync<GroupEntity>(
+                    'SELECT * FROM groups ORDER BY created DESC;',
+                    []
                 );
+                setGroups(fetchedGroups);
+            const mostRecentGroup = fetchedGroups.length > 0 ? fetchedGroups[0] : null; 
+            setDescription(mostRecentGroup ? mostRecentGroup.description : '');
+                return fetchedGroups; // Return the data from the transaction
             });
         }
         refetch();
