@@ -1,19 +1,20 @@
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { getObservation } from '../../../../helpers/ObservationRepository';
+import { getObservation } from '../../../../src/helpers/ObservationRepository';
 
 import { useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import { FAB, Text, TextInput } from "react-native-paper";
-import { BODY_NAMES } from "../../../../helpers/astron/Astron";
 
+import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
+
+import NSChoice from "@/src/components/NSChoice";
 import { Dropdown } from 'react-native-paper-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
-import NSChoice from "../../../../components/NSChoice";
-import UTCDateTimePicker from "../../../../components/UTCDateTimePicker";
-import { GetBestFitObjects } from "../../../../helpers/astron/init";
-import { formatDeg } from "../../../../helpers/MinutesToDeg";
+import UTCDateTimePicker from "../../../../src/components/UTCDateTimePicker";
+import { GetBestFitObjects } from "../../../../src/helpers/astron/init";
+import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
 
 const bodyNames = BODY_NAMES;
 

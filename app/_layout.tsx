@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import { PaperProvider } from 'react-native-paper';
-import { migrateDbIfNeeded } from "../helpers/Migrations";
+import { migrateDbIfNeeded } from "../src/helpers/Migrations";
 
 import { SafeAreaProvider } from "react-native-safe-area-context";
 

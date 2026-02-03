@@ -5,10 +5,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, FAB, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import InitAstron from '../helpers/astron/init';
-import { addGroupAsync, deleteGroupAsync } from '../helpers/GroupRepository';
-import { exportAllData, importAllData } from '../helpers/ImportExport';
-import { GroupEntity } from '../models/GroupEntity';
+import InitAstron from '../src/helpers/astron/init';
+import { addGroupAsync, deleteGroupAsync } from '../src/helpers/GroupRepository';
+import { exportAllData, importAllData } from '../src/helpers/ImportExport';
+import { GroupEntity } from '../src/models/GroupEntity';
 
 
 InitAstron();

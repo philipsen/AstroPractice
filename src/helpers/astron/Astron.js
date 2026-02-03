@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import * as AstronConstants from "./AstronConstants.js";
 const AUG_METHOD = "RIGOROUS";
 

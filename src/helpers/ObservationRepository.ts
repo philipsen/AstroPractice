@@ -1,5 +1,5 @@
-import { GroupEntity } from "@/models/GroupEntity";
-import { ObservationEntity } from "@/models/ObservationEntity";
+import { GroupEntity } from "@/src/models/GroupEntity";
+import { ObservationEntity } from "@/src/models/ObservationEntity";
 import { LocationObject } from "expo-location";
 import { SQLiteDatabase, SQLiteRunResult } from "expo-sqlite";
 
