@@ -4,8 +4,8 @@ import {
 import { useLocalSearchParams, withLayoutContext } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SetObservationData } from '../../../../helpers/astron/init';
-import { getObservation } from '../../../../helpers/ObservationRepository';
+import { SetObservationData } from '../../../../src/helpers/astron/init';
+import { getObservation } from '../../../../src/helpers/ObservationRepository';
 
 const { Navigator } = createMaterialTopTabNavigator();
 export const MaterialTopTabs = withLayoutContext(Navigator);

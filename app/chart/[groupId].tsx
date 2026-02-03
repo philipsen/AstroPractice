@@ -1,12 +1,12 @@
-import ObservationPlot from "@/components/ObservationPlot";
-import { ObservationEntity } from "@/models/ObservationEntity";
+import ObservationPlot from "@/src/components/ObservationPlot";
+import { ObservationEntity } from "@/src/types/ObservationEntity";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { FAB, Surface, Switch, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Degs_f } from "../../helpers/astron/Astron";
+import { Degs_f } from "../../src/helpers/astron/Astron";
 
 export default function Chart() {
   // console.log("Chart render start");

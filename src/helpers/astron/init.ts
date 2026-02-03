@@ -1,26 +1,26 @@
 import { SextantCorrectionsComputed } from "../../components/SextantCorrectionsSummary";
 import { ReductionCorrections } from "../../models/ReductionCorrections";
 import {
-    Calc as AstronCalc,
-    AstronSetBody,
-    SetPosition as AstronSetpos,
-    BODY_DATA,
-    COL,
-    Degs_f as Degs_f_Astron,
-    GetLongitude,
-    InitialiseBODY_DATA,
-    OBSERVED_ALT,
-    PopulateBODY_DATA_WithBodyNames,
-    PopulateBODY_DATA_WithStarData,
-    PopulateBODY_NAMES,
-    RefrCorr,
-    SEL_BODY_OBJ,
-    SEL_BODY_ROW,
-    SetDatetime,
-    SetObsAltitude,
-    SetSelBodyAltLimb,
-    SetSextantAngle,
-} from "../../src/helpers/astron/Astron";
+  Calc as AstronCalc,
+  AstronSetBody,
+  SetPosition as AstronSetpos,
+  BODY_DATA,
+  COL,
+  Degs_f as Degs_f_Astron,
+  GetLongitude,
+  InitialiseBODY_DATA,
+  OBSERVED_ALT,
+  PopulateBODY_DATA_WithBodyNames,
+  PopulateBODY_DATA_WithStarData,
+  PopulateBODY_NAMES,
+  RefrCorr,
+  SEL_BODY_OBJ,
+  SEL_BODY_ROW,
+  SetDatetime,
+  SetObsAltitude,
+  SetSelBodyAltLimb,
+  SetSextantAngle,
+} from "./Astron";
 const DEBUG_ASTRON = false;
 const DEBUG_ASTRON_INIT = false;
 export const DegsFormat = Degs_f_Astron;

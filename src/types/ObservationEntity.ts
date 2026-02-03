@@ -1,3 +1,4 @@
+
 export interface ObservationEntity {
   id: number;
   groupId: number;
@@ -7,8 +8,8 @@ export interface ObservationEntity {
   delay: number;
   indexError: number;
   observerAltitude: number;
-  limbType: number;
-  horizon: number;
+  limbType: number; // enum value, see constants/enums
+  horizon: number;  // enum value, see constants/enums
   object: string;
   latitude: number;
   longitude: number;

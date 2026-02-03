@@ -2,12 +2,12 @@
 import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import Svg, {
-  Circle,
-  G,
-  Line,
-  Path,
-  Rect,
-  Text as SvgText
+    Circle,
+    G,
+    Line,
+    Path,
+    Rect,
+    Text as SvgText
 } from 'react-native-svg';
 import { SetPosition } from '../helpers/astron/Astron';
 import { Calc, GetGha, GetReductionCorrections, SetObservationData } from '../helpers/astron/init';

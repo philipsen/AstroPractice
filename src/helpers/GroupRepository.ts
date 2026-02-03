@@ -1,4 +1,4 @@
-import { GroupEntity } from "@/models/GroupEntity";
+import { GroupEntity } from "@/src/models/GroupEntity";
 import { SQLiteDatabase } from "expo-sqlite";
 
 async function addGroupAsync(

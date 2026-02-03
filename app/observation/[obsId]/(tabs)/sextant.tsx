@@ -1,11 +1,11 @@
+import SextantCorrectionsSummary, { CorrectionsInput } from '@/src/components/SextantCorrectionsSummary';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import React from 'react';
 import { View } from 'react-native';
 import { FAB } from 'react-native-paper';
-import SextantCorrectionsSummary, { CorrectionsInput } from '../../../../components/SextantCorrectionsSummary';
-import { GetSextantCorrections, SetObservationData } from '../../../../helpers/astron/init';
-import { getObservation } from '../../../../helpers/ObservationRepository';
+import { GetSextantCorrections, SetObservationData } from '../../../../src/helpers/astron/init';
+import { getObservation } from '../../../../src/helpers/ObservationRepository';
 
 
 export default function SextantCorrections() {

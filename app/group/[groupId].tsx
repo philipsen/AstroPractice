@@ -1,5 +1,6 @@
-import { updateGroup } from '@/helpers/GroupRepository';
-import { GroupEntity } from '@/models/GroupEntity';
+import { updateGroup } from '@/src/helpers/GroupRepository';
+import { GroupEntity } from '@/src/types/GroupEntity';
+import { ObservationEntity } from '@/src/types/ObservationEntity';
 import * as Location from 'expo-location';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
@@ -7,10 +8,9 @@ import { useCallback, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
 import { FAB, IconButton, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DegsFormat } from '../../helpers/astron/init';
-import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../helpers/ObservationRepository';
-import { getErrorMessage } from '../../helpers/Utilities';
-import { ObservationEntity } from '../../models/ObservationEntity';
+import { DegsFormat } from '../../src/helpers/astron/init';
+import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../src/helpers/ObservationRepository';
+import { getErrorMessage } from '../../src/helpers/Utilities';
 
 export default function Group() {
     const groupId = Number(useLocalSearchParams().groupId);
