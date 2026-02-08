@@ -1,61 +1,42 @@
-import { useFocusEffect } from '@react-navigation/native';
+import { useGroupsStore } from '@/src/state/useGroupsStore';
 import { Link } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, FAB, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InitAstron from '../src/helpers/astron/init';
-import { addGroupAsync, deleteGroupAsync } from '../src/helpers/GroupRepository';
-import { exportAllData, importAllData } from '../src/helpers/ImportExport';
-import { GroupEntity } from '../src/models/GroupEntity';
+import { importAllData } from '../src/helpers/ImportExport';
 
 
 InitAstron();
 
 export default function Groups() {
-    const db = useSQLiteContext();
 
-    const [groups, setGroups] = useState<GroupEntity[]>([]);
-    const [text, setText] = useState('');
+    const hydrate = useGroupsStore((s: any) => s.hydrate);
+    const groups = useGroupsStore((s: any) => s.groups);
+    const add = useGroupsStore((s: any) => s.add);
+    const deleteGroup = useGroupsStore((s) => s.delete);
+    
+    const [name, setName] = useState("");
     const [description, setDescription] = useState('');
 
-    const refetchItems = useCallback(() => {
-        async function refetch() {
-            const res = await db.withExclusiveTransactionAsync(async () => {
-                const fetchedGroups = await db.getAllAsync<GroupEntity>(
-                    'SELECT * FROM groups ORDER BY created DESC;',
-                    []
-                );
-                setGroups(fetchedGroups);
-            const mostRecentGroup = fetchedGroups.length > 0 ? fetchedGroups[0] : null; 
-            setDescription(mostRecentGroup ? mostRecentGroup.description : '');
-                return fetchedGroups; // Return the data from the transaction
-            });
-        }
-        refetch();
-    }, [db]);
-    useFocusEffect(
-        useCallback(() => {
-            refetchItems();
-        }, [refetchItems])
-    );
     useEffect(() => {
-        refetchItems();
-    }, []);
+            hydrate();
+    }, [hydrate]);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1, padding: 16 }}>
                 <TextInput
-                    onChangeText={(text) => setText(text)}
+                    onChangeText={(name) => setName(name)}
                     onSubmitEditing={async () => {
-                        await addGroupAsync(db, text, description);
-                        await refetchItems();
-                        setText('');
+                        const n = name.trim();
+                        if (!n) return;
+                        const g = await add(n, description);
+                        setName("");
                     }}
                     label="name of group?"
-                    value={text}
+                    value={name}
                 />
                 <TextInput
                     onChangeText={(text) => setDescription(text)}
@@ -80,8 +61,8 @@ export default function Groups() {
                                         icon="delete"
                                         onPress={async () => {
                                             console.log("Delete group", item.id)
-                                            await deleteGroupAsync(db, item.id);
-                                            refetchItems();
+                                            await deleteGroup(item.id);
+                                            //refetchItems();
                                         }}>Delete</Button>
                                 </View>
                                 <Text> {item.description} </Text>
@@ -91,21 +72,31 @@ export default function Groups() {
                     keyExtractor={item => item.id.toString()}
                 />
             </View>
-            <FAB
+            {/* <FAB
                 icon="export"
                 style={{ position: 'absolute', margin: 16, right: 10, bottom: 0, zIndex: 1000 }}
                 onPress={() => exportAllData(db)}
                 label="Export"
                 size="small"
-            />
+            /> */}
             <FAB
                 icon="import"
                 style={{ position: 'absolute', margin: 16, right: 130, bottom: 0, zIndex: 1000 }}
                 onPress={async () => {
-                    await importAllData(db);
-                    await refetchItems();
+                    await importAllData();
+                    hydrate();
                 }}
                 label="Import"
+                size="small"
+            />
+            <FAB
+                icon="delete-sweep"
+                style={{ position: 'absolute', margin: 16, right: 250, bottom: 0, zIndex: 1000 }}
+                onPress={async () => {
+                    const clear = useGroupsStore.getState().deleteAll;
+                    await clear();
+                }}
+                label="Clear All"
                 size="small"
             />
         </SafeAreaView>

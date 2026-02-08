@@ -1,23 +1,27 @@
 import SextantCorrectionsSummary, { CorrectionsInput } from '@/src/components/SextantCorrectionsSummary';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useObservationStore } from '@/src/state/useObservationStore';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { FAB, Text } from 'react-native-paper';
 import { GetSextantCorrections, SetObservationData } from '../../../../src/helpers/astron/init';
-import { getObservation } from '../../../../src/helpers/ObservationRepository';
 
 
 export default function SextantCorrections() {
-    const obsId = Number(useLocalSearchParams().obsId);
     const router = useRouter();
-    const db = useSQLiteContext();
-    const obs = getObservation(db, Number(obsId));
-    SetObservationData(obs);
+    const observation = useObservationStore((s) => s.observation);
+    if (!observation) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Loading</Text>
+            </View>
+        );
+    }
+    SetObservationData(observation);
 
     const corrections = GetSextantCorrections();
     const data: CorrectionsInput = {
-        observation: obs,
+        observation: observation,
         corrections: corrections,
     };
     return (

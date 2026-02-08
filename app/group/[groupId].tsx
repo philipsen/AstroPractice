@@ -1,80 +1,46 @@
-import { updateGroup } from '@/src/helpers/GroupRepository';
-import { GroupEntity } from '@/src/types/GroupEntity';
+import { getDb } from '@/src/db/db';
+import { getCurrentLocation } from '@/src/helpers/location';
+import { useGroupsStore } from '@/src/state/useGroupsStore';
 import { ObservationEntity } from '@/src/types/ObservationEntity';
 import * as Location from 'expo-location';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
 import { FAB, IconButton, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DegsFormat } from '../../src/helpers/astron/init';
 import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../src/helpers/ObservationRepository';
-import { getErrorMessage } from '../../src/helpers/Utilities';
 
 export default function Group() {
     const groupId = Number(useLocalSearchParams().groupId);
-    const db = useSQLiteContext();
-    const [observations, setObservations] = useState<ObservationEntity[]>([]);
-    const [group, setGroup] = useState<GroupEntity>();
+    const select = useGroupsStore((s: any) => s.select);
+    const getById = useGroupsStore((s: any) => s.getById);
+    const updateGroup = useGroupsStore((s: any) => s.update);
 
-    const getGroup = useCallback(async () => {
-        const result = await db.getFirstAsync<GroupEntity>(
-            'SELECT * FROM groups WHERE id = ?',
-            [groupId]
-        );
-        if (result) {
-            setGroup(result);
-        }
-    }, [db, groupId]);
-
-    useFocusEffect(
-        useCallback(() => {
-            getGroup();
-        }, [getGroup])
-    );
-
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    const refetchItems = useCallback(() => {
-        // console.log("get location");
-        async function getCurrentLocation() {
-            try {
-                // console.log("get permission");
-                let { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    setErrorMsg('Permission to access location was denied');
-                    return;
-                }
+    useEffect(() => {
+        // hydrate();
+        select(groupId);
+        // setGroup(getById(groupId));
+        const g = getById(groupId);
 
-                const servicesEnabled = await Location.hasServicesEnabledAsync();
-                if (!servicesEnabled) {
-                    setErrorMsg('Location services are disabled. Please enable them in settings.');
-                    return;
-                }
-                // console.log("service enabled");
-                // console.log("get last known location");
-                let loc = await Location.getLastKnownPositionAsync();
-                if (!loc) {
-                    console.log("getting current location");
-                    loc = await Location.getCurrentPositionAsync({
-                        accuracy: Location.Accuracy.Balanced,
-                        // timeout: 10000, // 10 second timeout
-                        // maximumAge: 60000, // Accept location up to 1 minute old
-                    });
-                }
-                // console.log('Location:', loc);
-                setLocation(loc);
-                setErrorMsg(null); // Clear any previous errors
-            } catch (error) {
-                console.error('Location error:', error);
-                setErrorMsg(`Location unavailable: ${getErrorMessage(error)}`);
-            }
-        }
-        getCurrentLocation();
+        console.log("selected: ", groupId, g);
+        setName(g?.name || "");
+        setDescription(g?.description || "");
+    }, [groupId]);
 
+
+    const [observations, setObservations] = useState<ObservationEntity[]>([]);
+
+    const refetchItems = useCallback(async () => {
+        const loc = await getCurrentLocation();
+        if (loc) setLocation(loc);
         async function refetch() {
+            console.log("Refetching observations for group", groupId);
+            const db = await getDb();
             await db.withExclusiveTransactionAsync(async () => {
                 setObservations(
                     await db.getAllAsync<ObservationEntity>(
@@ -85,7 +51,7 @@ export default function Group() {
             });
         }
         refetch();
-    }, [db, groupId]);
+    }, [groupId]);
 
     useFocusEffect(
         useCallback(() => {
@@ -100,30 +66,26 @@ export default function Group() {
             <View style={{ margin: 16, gap: 8 }}>
                 <Text variant="titleMedium">Group Name</Text>
                 <TextInput
-                    value={group?.name || ''}
-                    onChangeText={async (text) => await setGroup(prev => prev ? { ...prev, name: text } : undefined)}
+                    value={name}
+                    onChangeText={setName}
                     mode="outlined"
                     placeholder="Enter group name"
                     onBlur={async () => {
-                        if (group) {
-                            await updateGroup(group, db);
-                        }
+                        updateGroup(groupId, name, description);
                     }}
                 />
 
                 <Text variant="titleMedium">Description</Text>
                 <TextInput
-                    value={group?.description || ''}
-                    onChangeText={async (text) => await setGroup(prev => prev ? { ...prev, description: text } : undefined)}
+                    value={description}
+                    onChangeText={setDescription}
                     mode="outlined"
                     multiline
                     numberOfLines={3}
                     placeholder="Enter group description"
                     onBlur={async () => {
-                        if (group) {
-                            await updateGroup(group, db);
-                        }
-                    }}
+                        updateGroup(groupId, name, description);
+                    }}                    
                 />
             </View>
 
@@ -138,6 +100,7 @@ export default function Group() {
                                 <IconButton
                                     mode="contained"
                                     onPress={async () => {
+                                        const db = await getDb();
                                         await deleteObservation(db, item.id)
                                         refetchItems();
                                     }}
@@ -169,12 +132,13 @@ export default function Group() {
                 size="small"
                 style={{ position: 'absolute', margin: 16, left: 10, bottom: 0 }}
                 onPress={() => router.back()}
-            />    
+            />
         </SafeAreaView>
     );
 
     async function addObservation(location: Location.LocationObject | null): Promise<number> {
         // console.log("Add observation to group", groupId)
+        const db = await getDb();
         const lastObservation = await getLatestObservation(db, groupId);
         const result = await newObservation(db, groupId, lastObservation);
         // console.log("Added observation with id:", result.lastInsertRowId, location?.coords.latitude, location?.coords.longitude);
