@@ -66,7 +66,7 @@ export async function deleteAllGroupsAsync(): Promise<void> {
 export async function updateGroup(
   id: number,
   patch: Partial<Pick<GroupEntity, "name" | "description">>,
-): Promise<void> 
+): Promise<void> {
   const g = await getGroup(id);
   if (!g) return;
   await upsertGroup({
