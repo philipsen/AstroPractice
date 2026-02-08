@@ -5,6 +5,7 @@ import {
   deleteGroupAsync,
   getGroup,
   getGroups,
+  updateGroup
 } from "../db/group.repo";
 import type { GroupEntity } from "../types/GroupEntity";
 
@@ -63,6 +64,7 @@ export const useGroupsStore = create<GroupsState>((set, get) => ({
         g.id === id ? { ...g, name, description } : g,
       ),
     }));
+    updateGroup(id, { name, description });
   },
 
   delete: async (id: number) => {
