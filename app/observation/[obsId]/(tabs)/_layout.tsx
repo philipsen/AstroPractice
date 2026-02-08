@@ -1,11 +1,11 @@
+import { useGroupsStore } from '@/src/state/useGroupsStore';
+import { useObservationStore } from '@/src/state/useObservationStore';
 import {
   createMaterialTopTabNavigator
 } from '@react-navigation/material-top-tabs';
 import { useLocalSearchParams, withLayoutContext } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SetObservationData } from '../../../../src/helpers/astron/init';
-import { getObservation } from '../../../../src/helpers/ObservationRepository';
 
 const { Navigator } = createMaterialTopTabNavigator();
 export const MaterialTopTabs = withLayoutContext(Navigator);
@@ -13,9 +13,18 @@ export const MaterialTopTabs = withLayoutContext(Navigator);
 export default function TopTabsLayout() {
 
   const observationId = Number(useLocalSearchParams().obsId);
-  const db = useSQLiteContext();
-  const obs = getObservation(db, Number(observationId));
-  SetObservationData(obs);
+   const selectedGroupId = useGroupsStore((s) => s.selectedGroupId);
+
+  const observationInit = useObservationStore((s) => s.init);
+
+
+  useEffect(() => {
+    (async () => {
+      console.log("TopTabsLayout useEffect: calling observationInit with obsId=", observationId, " selectedGroupId=", selectedGroupId);
+       await observationInit(observationId, selectedGroupId);
+    })();
+  }, [observationInit, observationId, selectedGroupId]);
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -30,14 +39,14 @@ export default function TopTabsLayout() {
           name="index"
           initialParams={{ obsId: observationId }}
           options={{ title: 'Edit' }} />
-        <MaterialTopTabs.Screen
+        {/* <MaterialTopTabs.Screen
           name="sextant"
           initialParams={{ obsId: observationId }}
           options={{ title: 'Sextant' }} />
         <MaterialTopTabs.Screen
           name="reduction"
           initialParams={{ obsId: observationId }}
-          options={{ title: 'Reduction' }} />
+          options={{ title: 'Reduction' }} /> */}
       </MaterialTopTabs>
 
     </SafeAreaView>

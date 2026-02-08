@@ -1,55 +1,27 @@
 
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
-import { getObservation } from '../../../../src/helpers/ObservationRepository';
+import { useRouter } from "expo-router";
 
-import { useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { FAB, Text, TextInput } from "react-native-paper";
 
 import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
 
 import NSChoice from "@/src/components/NSChoice";
+import UTCDateTimePicker from "@/src/components/UTCDateTimePicker";
+import { useObservationStore } from "@/src/state/useObservationStore";
 import { Dropdown } from 'react-native-paper-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
-import UTCDateTimePicker from "../../../../src/components/UTCDateTimePicker";
 import { GetBestFitObjects } from "../../../../src/helpers/astron/init";
 import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
+const bodyNames = BODY_NAMES.map(name => name.toLowerCase());
 
-const bodyNames = BODY_NAMES;
 
 
 export default function ObservationEdit() {
-    const id = Number(useLocalSearchParams().obsId);
-
-    const db = useSQLiteContext();
-    const obs = useMemo(() => getObservation(db, Number(id)), [db, id]);
+    const observation = useObservationStore((s) => s.observation);
+    const updateField = useObservationStore((s) => s.updateField);
     const router = useRouter();
-
-    const [delay, setDelay] = useState<string>(obs.delay ? obs.delay.toString() : "0");
-    const [angle, setAngle] = useState<number>(obs.angle ? obs.angle : 0);
-
-    const [angleDegrees, setAngleDegrees] = useState<string>(Math.floor(angle).toString());
-    const [angleMinutes, setAngleMinutes] = useState<string>((Math.round(60 * (angle - Number(angleDegrees)) * 10) / 10).toString());
-
-    const [indexError, setIndexError] = useState<string>(obs.indexError ? obs.indexError.toString() : "0");
-    const [observerAltitude, setObserverAltitude] = useState<string>(obs.observerAltitude ? obs.observerAltitude.toString() : "0");
-    const limbTypeOptions = [{ label: 'Lower', value: 'lower' },{ label: 'Center', value: 'center' }, { label: 'Upper', value: 'upper' }];
-
-
-    const [limb, setLimb] = useState<string>(limbTypeOptions[obs.limbType ? obs.limbType : 0].value);
-    const [artificialHorizon, setArtificialHorizon] = useState(obs.horizon ? obs.horizon === 1 : false);
-    const [body, setBody] = useState<number>(obs.object ? bodyNames.indexOf(obs.object) : 0);
-
-
-    const latitude = obs.latitude ? obs.latitude : 0;
-    const longitude = obs.longitude ? obs.longitude : 0;
-    const [latitudeDegrees, setLatitudeDegrees] = useState<string>(Math.floor(Math.abs(latitude)).toString());
-    const [latitudeMinutes, setLatitudeMinutes] = useState<string>(((60 * (Math.abs(latitude) - Number(latitudeDegrees)) * 10) / 10).toFixed(1));
-    const [longitudeDegrees, setLongitudeDegrees] = useState<string>(Math.floor(Math.abs(longitude)).toString());
-    const [longitudeMinutes, setLongitudeMinutes] = useState<string>(((60 * (Math.abs(longitude) - Number(longitudeDegrees)) * 10) / 10).toFixed(1));
-    const [nors, setNors] = useState<'N' | 'S' | 'E' | 'W'>(obs.latitude > 0 ? 'N' : 'S');
-    const [eorw, setEorw] = useState<'N' | 'S' | 'E' | 'W'>(obs.longitude > 0 ? 'E' : 'W');
 
     const refDelay = useRef<any>(null);
     const refAngleDegrees = useRef<any>(null);
@@ -70,6 +42,7 @@ export default function ObservationEdit() {
         };
     }
 
+    console.log("Rendering observation edit, observation:", observation?.id);
     const delayGate = useGateSelectOnFocus();
     const angleDegreesGate = useGateSelectOnFocus();
     const angleMinutesGate = useGateSelectOnFocus();
@@ -81,26 +54,50 @@ export default function ObservationEdit() {
     const longitudeDegreesGate = useGateSelectOnFocus();
     const longitudeMinutesGate = useGateSelectOnFocus();
 
-    const [myDate, setMyDate] = useState<Date | undefined>(new Date(obs.created));
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         console.log("ObservationEdit focus effect for id =", id);
-    //         return () => {
-    //             console.log("ObservationEdit cleanup for id =", id, myDate);
-    //             // updateObservation();
-    //         }
-    //     }, [myDate, id])
-    // );
+    const [timeOfObservation, setTimeOfObservation] = useState<Date | undefined>(observation ? new Date(observation.created) : undefined);
+    const [delay, setDelay] = useState<string>("");
+    const [angleDegrees, setAngleDegrees] = useState<string>(); //Math.floor(angle).toString());
+    const [angleMinutes, setAngleMinutes] = useState<string>(); //(Math.round(60 * (angle - Number(angleDegrees)) * 10) / 10).toString());
+    const [indexError, setIndexError] = useState<string>("");
+    const [observerAltitude, setObserverAltitude] = useState<string>("");
+    const limbTypeOptions = [{ label: 'Lower', value: 'lower' },{ label: 'Center', value: 'center' }, { label: 'Upper', value: 'upper' }];
 
-    // const hs = useMemo(() => GetHs(), []);
-    // console.log(" hs =", hs);
-    // const objects = useMemo(() => GetBestFitObjects(), []);
-    // console.log(" objects =", objects);
-    // for (const obj of objects) {
-    //     console.log(`  ${obj.name}: \thc = ${formatDeg(Number(obj.hc))}, \tdiff = ${formatDeg(Number(obj.difference))}, azm = ${Number(obj.azimuth).toFixed(0)}°`);
-    // }
-    
+    const [limb, setLimb] = useState<string>(""); //limbTypeOptions[obs.limbType ? obs.limbType : 0].value);
+    const [artificialHorizon, setArtificialHorizon] = useState(false); //obs.horizon ? obs.horizon === 1 : false);
+    const [body, setBody] = useState<number>(0);
+
+    const [latitudeDegrees, setLatitudeDegrees] = useState<string>("") ; //(Math.floor(Math.abs(latitude)).toString());
+    const [latitudeMinutes, setLatitudeMinutes] = useState<string>("") ; //(((60 * (Math.abs(latitude) - Number(latitudeDegrees)) * 10) / 10).toFixed(1));
+    const [longitudeDegrees, setLongitudeDegrees] = useState<string>("") ; //(Math.floor(Math.abs(longitude)).toString());
+    const [longitudeMinutes, setLongitudeMinutes] = useState<string>("") ; //(((60 * (Math.abs(longitude) - Number(longitudeDegrees)) * 10) / 10).toFixed(1));
+    const [nors, setNors] = useState<'N' | 'S' | 'E' | 'W'>('N') ; //(obs.latitude > 0 ? 'N' : 'S');
+    const [eorw, setEorw] = useState<'N' | 'S' | 'E' | 'W'>('E') ; //(obs.longitude > 0 ? 'E' : 'W');
+
+    useEffect(() => {
+        console.log("observation changed, updating fields", observation);
+        if (observation) {
+            setDelay(observation.delay?.toString());
+            setAngleDegrees(Math.floor(observation.angle).toString());
+            setAngleMinutes((Math.round(60 * (observation.angle - Math.floor(observation.angle)) * 10) / 10).toString());
+            setObserverAltitude(observation.observerAltitude?.toString());
+            setBody(bodyNames.indexOf(observation.object?.toLowerCase()))
+            setIndexError(observation.indexError?.toString());
+            setLimb(limbTypeOptions[observation.limbType ? observation.limbType : 0].value);
+             setArtificialHorizon(observation.horizon ? observation.horizon === 1 : false);
+            const latitude = observation.latitude;
+            const longitude = observation.longitude;
+            // console.log("Parsed latitude and longitude", latitude, longitude);
+            setLatitudeDegrees(Math.floor(Math.abs(latitude)).toString());
+            // console.log("Latitude degrees: ", latitudeDegrees);
+            setLatitudeMinutes((((60 * (Math.abs(latitude) - Math.floor(Math.abs(latitude))) * 10) / 10).toFixed(1)).toString());
+            // console.log("Latitude minutes: ", latitudeMinutes);
+            setLongitudeDegrees(Math.floor(Math.abs(longitude)).toString());
+            setLongitudeMinutes((((60 * (Math.abs(longitude) - Math.floor(Math.abs(longitude))) * 10) / 10).toFixed(1)).toString());
+            setNors(latitude > 0 ? 'N' : 'S');
+            setEorw(longitude > 0 ? 'E' : 'W');
+        }
+    }, [observation?.id]);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -112,45 +109,38 @@ export default function ObservationEdit() {
                 }}
                 size="small"
             />
-            <FAB
-                icon="content-save"
-                style={{ position: 'absolute', margin: 16, right: 10, top: 0 }}
-                onPress={() => {
-                    updateObservation();
-                    router.back();
-                }}
-                size="small"
-            />
             <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <UTCDateTimePicker
-                        value={myDate}
-                        onChange={(d: any) => setMyDate(d)}
+                        value={timeOfObservation}
+                        onChange={(d: any) => setTimeOfObservation(d)}
                     />
+                    <Text>x{delay}x`</Text>
                     <TextInput
                         mode="outlined"
-                        theme={{
-                            roundness: 5
-                        }}
+                        theme={{ roundness: 5 }}
                         style={{ margin: 2, width: 80, left: 30 }}
                         dense={true}
                         ref={refDelay}
                         label="Delay"
-                        onChangeText={setDelay}
-                        value={delay}
+                        onChangeText={setDelay}                             
+                        value={delay ? delay.toString() : "0"}
                         returnKeyType="next"
                         inputMode="decimal"
                         autoFocus
                         onSubmitEditing={() => refAngleDegrees.current?.focus()}
                         selectTextOnFocus={delayGate.selectTextOnFocus}
                         onFocus={delayGate.onFocus}
-                        onBlur={delayGate.onBlur}
+                        onBlur={() => {
+                            updateField('delay', Number(delay));
+                            delayGate.onBlur();
+                        }}
                         right={
                             <TextInput.Affix text="s" />
                         } />
                 </View>
 
-                <View style={{ flexDirection: 'row' }}>
+               <View style={{ flexDirection: 'row' }}>
                     <TextInput
                         mode="outlined"
                         theme={{ roundness: 5 }}
@@ -164,7 +154,11 @@ export default function ObservationEdit() {
                         inputMode="decimal"
                         selectTextOnFocus={angleDegreesGate.selectTextOnFocus}
                         onFocus={angleDegreesGate.onFocus}
-                        onBlur={angleDegreesGate.onBlur}
+                        onBlur={() => {
+                            angleDegreesGate.onBlur();
+                            const angle = Number(angleDegrees) + Number(angleMinutes) / 60;
+                            updateField('angle', angle);
+                        }}
                     />
                     <TextInput
                         mode="outlined"
@@ -178,7 +172,11 @@ export default function ObservationEdit() {
                         onSubmitEditing={() => refIndexError.current?.focus()}
                         selectTextOnFocus={angleMinutesGate.selectTextOnFocus}
                         onFocus={angleMinutesGate.onFocus}
-                        onBlur={angleMinutesGate.onBlur}
+                        onBlur={() => {
+                            const angle = Number(angleDegrees) + Number(angleMinutes) / 60;
+                            updateField('angle', angle);
+                            angleMinutesGate.onBlur();
+                        }}
                         inputMode="decimal"
                     />
 
@@ -189,12 +187,15 @@ export default function ObservationEdit() {
                         ref={refIndexError}
                         label="idx err"
                         onChangeText={text => setIndexError(text)}
-                        value={indexError.toString()}
+                        value={indexError ? indexError.toString() : "0"}
                         returnKeyType="next"
                         onSubmitEditing={() => refHeight.current?.focus()}
                         selectTextOnFocus={indexErrorGate.selectTextOnFocus}
                         onFocus={indexErrorGate.onFocus}
-                        onBlur={indexErrorGate.onBlur}
+                        onBlur={() => {
+                            updateField('indexError', Number(indexError));
+                            indexErrorGate.onBlur();
+                        }}
                         inputMode="decimal"
                     />
 
@@ -205,17 +206,19 @@ export default function ObservationEdit() {
                         ref={refHeight}
                         label="height"
                         onChangeText={text => setObserverAltitude(text)}
-                        value={observerAltitude}
+                        value={observerAltitude ? observerAltitude.toString() : "0"}
                         returnKeyType="next"
                         inputMode="decimal"
                         onSubmitEditing={() => refLatitudeDegrees.current?.focus()}
                         selectTextOnFocus={heightGate.selectTextOnFocus}
                         onFocus={heightGate.onFocus}
-                        onBlur={heightGate.onBlur}
+                        onBlur={() => {
+                            updateField('observerAltitude', Number(observerAltitude));
+                            heightGate.onBlur();
+                        }}              
                     />
-
-                </View>
-
+                </View> 
+ 
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ margin: 2 }}>
                         <Dropdown
@@ -224,7 +227,11 @@ export default function ObservationEdit() {
                             placeholder="Select limb"
                             options={limbTypeOptions}
                             value={limb.toString()}
-                            onSelect={limb => setLimb(limb ?? "lower")}
+                            onSelect={limb => {
+                                setLimb(limb ?? "lower");
+                                const limbIndex = limbTypeOptions.findIndex(option => option.value === limb);
+                                updateField('limbType', limbIndex);
+                            }}
                         />
                     </View>
                     <View style={{ margin: 2, flex: .7 }}>
@@ -235,7 +242,10 @@ export default function ObservationEdit() {
                             options={bodyNames.map((name, index) => ({ label: name, value: name }))}
                             value={bodyNames[body]}
                             onSelect={(value) => {
-                                setBody(bodyNames.indexOf(value));
+                                if (value) {
+                                    updateField('object', value);
+                                    setBody(bodyNames.indexOf(value));
+                                }
                             }}
                         />
                     </View>
@@ -247,11 +257,13 @@ export default function ObservationEdit() {
                             options={[{ label: 'Natural', value: 'natural' }, { label: 'Artificial', value: 'artificial' }]}
                             value={artificialHorizon ? 'artificial' : 'natural'}
                             onSelect={(value) => {
+                                updateField('horizon', value === 'artificial' ? 1 : 0);
                                 setArtificialHorizon(value === 'artificial');
                             }}
                         />
                     </View>
                 </View>
+
                 <View style={{ flexDirection: 'row' }}>
                     <TextInput
                         label="latitude"
@@ -265,8 +277,11 @@ export default function ObservationEdit() {
                         onSubmitEditing={() => refLatitudeMinutes.current?.focus()}
                         selectTextOnFocus={latitudeDegreesGate.selectTextOnFocus}
                         onFocus={latitudeDegreesGate.onFocus}
-                        onBlur={latitudeDegreesGate.onBlur}
-
+                        onBlur={() => {
+                            const latitude = (Number(latitudeDegrees) + Number(latitudeMinutes) / 60) * (nors === 'N' ? 1 : -1);
+                            updateField('latitude', latitude);
+                            latitudeDegreesGate.onBlur();
+                        }}
                         mode="outlined"
                         theme={{ roundness: 5 }}
                         style={{ margin: 2 }}
@@ -283,14 +298,22 @@ export default function ObservationEdit() {
                         onSubmitEditing={() => refLongitudeDegrees.current?.focus()}
                         selectTextOnFocus={latitudeMinutesGate.selectTextOnFocus}
                         onFocus={latitudeMinutesGate.onFocus}
-                        onBlur={latitudeMinutesGate.onBlur}
+                        onBlur={() => {
+                            const latitude = (Number(latitudeDegrees) + Number(latitudeMinutes) / 60) * (nors === 'N' ? 1 : -1);
+                            updateField('latitude', latitude);
+                            latitudeMinutesGate.onBlur();
+                        }}
                         mode="outlined"
                         theme={{ roundness: 5 }}
                         style={{ margin: 2 }}
                     />
-                    <NSChoice value={nors} onChange={setNors} />
+                    <NSChoice value={nors} onChange={value => {
+                        setNors(value);
+                        const latitude = (Number(latitudeDegrees) + Number(latitudeMinutes) / 60) * (value === 'N' ? 1 : -1);
+                        updateField('latitude', latitude);
+                    }} />
 
-                </View>
+                </View>     
                 <View style={{ flexDirection: 'row' }}>
                     <TextInput
                         label="longitude"
@@ -304,7 +327,11 @@ export default function ObservationEdit() {
                         onSubmitEditing={() => { refLongitudeMinutes.current?.focus() }}
                         selectTextOnFocus={longitudeDegreesGate.selectTextOnFocus}
                         onFocus={longitudeDegreesGate.onFocus}
-                        onBlur={longitudeDegreesGate.onBlur}
+                        onBlur={() => {
+                            const longitude = (Number(longitudeDegrees) + Number(longitudeMinutes) / 60) * (eorw === 'E' ? 1 : -1);
+                            updateField('longitude', longitude);
+                            longitudeDegreesGate.onBlur();
+                        }}
                         mode="outlined"
                         theme={{ roundness: 5 }}
                     />  
@@ -313,18 +340,26 @@ export default function ObservationEdit() {
                         onChangeText={text => setLongitudeMinutes(text)}
                         value={longitudeMinutes}
                         right={
-                            <TextInput.Affix text="'" />
+                            <TextInput.Affix text="′" />
                         }
                         inputMode="decimal"
                         ref={refLongitudeMinutes}
                         selectTextOnFocus={longitudeMinutesGate.selectTextOnFocus}
                         onFocus={longitudeMinutesGate.onFocus}
-                        onBlur={longitudeMinutesGate.onBlur}
+                        onBlur={() => {
+                            const longitude = (Number(longitudeDegrees) + Number(longitudeMinutes) / 60) * (eorw === 'E' ? 1 : -1);
+                            updateField('longitude', longitude);
+                            longitudeMinutesGate.onBlur();
+                        }}
                         mode="outlined"
                         theme={{ roundness: 5 }}
                     />
-                    <NSChoice value={eorw} onChange={setEorw} />
-                </View>
+                    <NSChoice value={eorw} onChange={value => {
+                        setEorw(value);
+                        const longitude = (Number(longitudeDegrees) + Number(longitudeMinutes) / 60) * (value === 'E' ? 1 : -1);
+                        updateField('longitude', longitude);
+                    }} />
+                </View> 
 
                 <View style={{ marginTop: 20, padding: 10, marginLeft: 55, marginRight: 55, borderWidth: 1, borderColor: '#ccc', borderRadius: 8 }}>
                     <Text variant="titleMedium" style={{ marginBottom: 10 }}>Best Matching Objects</Text>
@@ -348,45 +383,4 @@ export default function ObservationEdit() {
             </View>
         </SafeAreaView>
     );
-
-    async function updateObservation() {
-        const dt2 = myDate;
-        // console.log("updateObservation called", dt2);
-        const angle = Number(angleDegrees) + Number(angleMinutes) / 60;
-        const longitude2 = (eorw === 'E' ? 1 : -1) * (Number(longitudeDegrees) + Number(longitudeMinutes) / 60);
-        const latitude2 = (nors === 'N' ? 1 : -1) * (Number(latitudeDegrees) + Number(latitudeMinutes) / 60);
-
-        await db.runAsync(
-            `UPDATE observations SET
-                angle = ?,
-                observerAltitude = ?,
-                indexError = ?,
-                object = ?,
-                latitude = ?,
-                longitude = ?,
-                delay = ?,
-                limbType = ?,
-                horizon = ?,
-                created = ?
-            WHERE id = ?;`,
-            [
-                angle.toString(),
-                observerAltitude,
-                indexError,
-                bodyNames[body],
-                latitude2,
-                longitude2,
-                delay,
-                limbTypeOptions.findIndex(lt => lt.value === limb),
-                artificialHorizon ? 1 : 0,
-                dt2 ? dt2.toISOString() : null,
-                id
-            ]
-        );
-        // const obs = getObservation(db, Number(id));
-        // console.log("obs = ", obs);
-        // router.back();
-    }
-
 }
-

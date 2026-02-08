@@ -4,8 +4,9 @@ import { documentDirectory } from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { SQLiteDatabase } from "expo-sqlite";
 import { Alert } from "react-native";
-import { GroupEntity } from "../models/GroupEntity";
-import { ObservationEntity } from "../models/ObservationEntity";
+import { getDb } from "../db/db";
+import { GroupEntity } from "../types/GroupEntity";
+import { ObservationEntity } from "../types/ObservationEntity";
 import { getErrorMessage } from "./Utilities";
 export async function exportAllData(db: SQLiteDatabase) {
   try {
@@ -59,7 +60,8 @@ export async function exportAllData(db: SQLiteDatabase) {
   }
 }
 
-export async function importAllData(db: SQLiteDatabase) {
+export async function importAllData() {
+  const db = await getDb();
   try {
     // Pick a JSON file
     const result = await DocumentPicker.getDocumentAsync({
@@ -113,9 +115,16 @@ export async function importAllData(db: SQLiteDatabase) {
 
                 // Import groups with new IDs
                 for (const group of importData.groups) {
+                  console.log(
+                    `Processing group with old ID ${group.id}:`,
+                    group,
+                  );
                   const newGroupId = nextGroupId++;
                   groupIdMapping[group.id] = newGroupId;
 
+                  console.log(
+                    `Importing group "${group}" with new ID ${newGroupId} (old ID was ${group.id})`,
+                  );
                   await db.runAsync(
                     `INSERT INTO groups (id, name, description, created) VALUES (?, ?, ?, ?)`,
                     [newGroupId, group.name, group.description, group.created],
