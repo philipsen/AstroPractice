@@ -81,20 +81,24 @@ export default function Groups() {
             /> */}
             <FAB
                 icon="import"
-                style={{ position: 'absolute', margin: 16, right: 130, bottom: 0, zIndex: 1000 }}
+                style={{ position: 'absolute', margin: 16, right: 13, bottom: 0, zIndex: 1000 }}
                 onPress={async () => {
-                    await importAllData();
-                    hydrate();
+                    await importAllData(() => {
+                        hydrate(); // Reload groups after import is confirmed and completed
+                    });
                 }}
                 label="Import"
                 size="small"
             />
             <FAB
                 icon="delete-sweep"
-                style={{ position: 'absolute', margin: 16, right: 250, bottom: 0, zIndex: 1000 }}
+                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, zIndex: 1000 }}
                 onPress={async () => {
+                    console.log('Clear All pressed');
                     const clear = useGroupsStore.getState().deleteAll;
                     await clear();
+                    console.log('All groups cleared, hydrating...');
+                    hydrate();
                 }}
                 label="Clear All"
                 size="small"

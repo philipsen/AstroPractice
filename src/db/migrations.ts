@@ -1,5 +1,4 @@
-
-import * as SQLite from 'expo-sqlite';
+import * as SQLite from "expo-sqlite";
 
 type DB = SQLite.SQLiteDatabase;
 
@@ -42,27 +41,75 @@ export const MIGRATIONS: Record<number, Migration> = {
       CREATE INDEX IF NOT EXISTS idx_observations_created ON observations(created);
     `);
   },
-  // Example for future changes:
-  // 2: async (db) => {
-  //   await db.execAsync(`ALTER TABLE observations ADD COLUMN notes TEXT;`);
-  // },
+  2: async (db) => {
+    // To change the foreign key constraint, we need to recreate the table
+    // 1. Rename the old table
+    await db.execAsync(`ALTER TABLE observations RENAME TO observations_old;`);
+
+    // 2. Recreate the table with ON DELETE CASCADE
+    await db.execAsync(`
+      CREATE TABLE observations (
+        id INTEGER PRIMARY KEY,
+        groupId INTEGER NOT NULL,
+        created INTEGER NOT NULL,
+        angle REAL NOT NULL,
+        delay REAL NOT NULL,
+        indexError REAL NOT NULL,
+        observerAltitude REAL NOT NULL,
+        limbType INTEGER NOT NULL,
+        horizon INTEGER NOT NULL,
+        object TEXT NOT NULL,
+        latitude REAL NOT NULL,
+        longitude REAL NOT NULL,
+        FOREIGN KEY (groupId) REFERENCES groups(id)
+          ON UPDATE CASCADE
+          ON DELETE CASCADE
+      );
+    `);
+
+    // 3. Copy data from old table
+    await db.execAsync(`
+      INSERT INTO observations (
+        id, groupId, created, angle, delay, indexError, observerAltitude, limbType, horizon, object, latitude, longitude
+      )
+      SELECT id, groupId, created, angle, delay, indexError, observerAltitude, limbType, horizon, object, latitude, longitude
+      FROM observations_old;
+    `);
+
+    // 4. Drop the old table
+    await db.execAsync(`DROP TABLE observations_old;`);
+
+    // 5. Recreate indexes
+    await db.execAsync(
+      `CREATE INDEX IF NOT EXISTS idx_observations_group ON observations(groupId);`,
+    );
+    await db.execAsync(
+      `CREATE INDEX IF NOT EXISTS idx_observations_created ON observations(created);`,
+    );
+  },
 };
 
 async function getCurrentVersion(db: DB): Promise<number> {
-  await db.execAsync(`CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);`);
-  const row = await db.getFirstAsync<{ value: string }>(`SELECT value FROM meta WHERE key='db_version'`);
+  await db.execAsync(
+    `CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);`,
+  );
+  const row = await db.getFirstAsync<{ value: string }>(
+    `SELECT value FROM meta WHERE key='db_version'`,
+  );
   return row ? Number(row.value) || 0 : 0;
 }
 
 async function setVersion(db: DB, v: number): Promise<void> {
   await db.runAsync(
     `INSERT INTO meta (key, value) VALUES ('db_version', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value`,
-    [String(v)]
+    [String(v)],
   );
 }
 
 export async function runMigrations(db: DB): Promise<void> {
-  const versions = Object.keys(MIGRATIONS).map(Number).sort((a, b) => a - b);
+  const versions = Object.keys(MIGRATIONS)
+    .map(Number)
+    .sort((a, b) => a - b);
   if (versions.length === 0) return;
 
   let current = await getCurrentVersion(db);

@@ -60,7 +60,7 @@ export async function exportAllData(db: SQLiteDatabase) {
   }
 }
 
-export async function importAllData() {
+export async function importAllData(onImported?: () => void) {
   const db = await getDb();
   try {
     // Pick a JSON file
@@ -162,6 +162,7 @@ export async function importAllData() {
                 "Success",
                 "Data imported successfully with remapped IDs!",
               );
+              if (onImported) onImported();
             } catch (error) {
               console.error("Import error:", error);
               Alert.alert(
