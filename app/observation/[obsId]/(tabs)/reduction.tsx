@@ -6,8 +6,10 @@ import { View } from "react-native";
 import { FAB, Text } from "react-native-paper";
 import { Calc, GetGha, GetReductionCorrections, SetPosition } from "../../../../src/helpers/astron/init";
 import { CalcAssumedPosition } from "../../../../src/helpers/CalcAssumedPosition";
+import { useNightMode } from '../../../../src/state/NightModeContext';
 
 export default function SightReduction() {
+    const { nightMode, setNightMode } = useNightMode();
     const router = useRouter();
     const observation = useObservationStore((s) => s.observation);
     const [realPosition, setRealPosition] = useState<boolean>(true);
@@ -29,7 +31,7 @@ export default function SightReduction() {
 
         const rd = realPosition ? rdReal : rdAssumed;
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: nightMode ? '#181818' : '#fff' }}>
                 <ReductionSummary data={{
                     observation: observation,
                     reduction: rd,
@@ -37,19 +39,31 @@ export default function SightReduction() {
                     setRealPosition: setRealPosition
                 }} />
 
-                <FAB
-                    icon="arrow-left"
-                    style={{ position: 'absolute', margin: 16, left: 10, bottom: 0 }}
-                    onPress={() => {
-                        router.back();
-                    }}
-                />
+                <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
+                    <FAB
+                        icon="arrow-left"
+                        style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                        color={nightMode ? 'red' : '#000'}
+                        onPress={() => {
+                            router.back();
+                        }}
+                        size="small"
+                    />
+                    <FAB
+                        icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
+                        style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                        onPress={() => setNightMode(!nightMode)}
+                        color={nightMode ? 'red' : '#000'}
+                        size="small"
+                        accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+                    />
+                </View>
             </View>
         );
     } else {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>loading...</Text>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: nightMode ? '#181818' : '#fff' }}>
+                <Text style={{ color: nightMode ? '#ff3333' : '#000' }}>loading...</Text>
             </View>
         );
     }

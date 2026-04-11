@@ -102,22 +102,26 @@ export default function ObservationEdit() {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: nightMode ? '#181818' : '#fff' }}>
-            <FAB
-                icon="arrow-left"
-                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, zIndex: 101 }}
-                onPress={() => {
-                    router.back();
-                }}
-                size="small"
-            />
-            {/* Night mode FAB at bottom right */}
-            <FAB
-                icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
-                style={{ position: 'absolute', right: 16, bottom: 16, backgroundColor: '#181818', elevation: 4, zIndex: 100 }}
-                onPress={() => setNightMode(!nightMode)}
-                color={nightMode ? '#ff2222' : '#fff'}
-                accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
-            />
+            {/* FAB row: back and night mode side by side at bottom left */}
+            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
+                <FAB
+                    icon="arrow-left"
+                    style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                    color={nightMode ? 'red' : '#000'}
+                    onPress={() => {
+                        router.back();
+                    }}
+                    size="small"
+                />
+                <FAB
+                    icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
+                    style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                    onPress={() => setNightMode(!nightMode)}
+                    color={nightMode ? 'red' : '#000'}
+                    size="small"
+                    accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+                />
+            </View>
             <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <UTCDateTimePicker
