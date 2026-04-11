@@ -9,6 +9,15 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Build Android Production (EAS)",
+			"type": "shell",
+			"command": "npx eas build -p android --profile production",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }
