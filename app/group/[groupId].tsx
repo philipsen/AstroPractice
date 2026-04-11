@@ -13,7 +13,7 @@ import { deleteObservation, getLatestObservation, newObservation, updateLocation
 import { useNightMode } from '../../src/state/NightModeContext';
 
 export default function Group() {
-    const { nightMode } = useNightMode();
+    const { nightMode, setNightMode } = useNightMode();
     const groupId = Number(useLocalSearchParams().groupId);
     const select = useGroupsStore((s: any) => s.select);
     const getById = useGroupsStore((s: any) => s.getById);
@@ -135,13 +135,15 @@ export default function Group() {
             <FAB
                 icon="map"
                 size="small"
-                style={{ position: 'absolute', margin: 16, right: 10, bottom: 0 }}
+                style={{ position: 'absolute', margin: 16, right: 10, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                color={nightMode ? 'red' : '#000'}
                 onPress={() => { router.push(`/chart/${groupId}`) }}
             />
             <FAB
                 icon="plus"
                 size="small"
-                style={{ position: 'absolute', margin: 16, right: 60, bottom: 0 }}
+                style={{ position: 'absolute', margin: 16, right: 60, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                color={nightMode ? 'red' : '#000'}
                 onPress={async () => {
                     const observationId = await addObservation(location)
                     router.push(`/observation/${observationId}`)
@@ -150,8 +152,17 @@ export default function Group() {
             <FAB
                 icon="arrow-left"
                 size="small"
-                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0 }}
+                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                color={nightMode ? 'red' : '#000'}
                 onPress={() => router.back()}
+            />
+            <FAB
+                icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
+                size="small"
+                style={{ position: 'absolute', margin: 16, left: 70, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                color={nightMode ? 'red' : '#000'}
+                onPress={() => setNightMode(!nightMode)}
+                accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
             />
         </SafeAreaView>
     );
