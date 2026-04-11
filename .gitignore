@@ -42,3 +42,6 @@ app-example
 /ios
 /android
 build-*.apk
+
+.fake
+build-1770570534028.aab
