@@ -27,15 +27,7 @@ export default function HomeScreen() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: nightMode ? '#000' : '#fff' }}>
             <View style={{ flex: 1, padding: 16 }}>
-                <Button
-                    icon={nightMode ? 'weather-night' : 'white-balance-sunny'}
-                    mode="contained"
-                    style={{ marginBottom: 16, backgroundColor: nightMode ? '#111' : '#eee' }}
-                    labelStyle={{ color: nightMode ? 'red' : '#000' }}
-                    onPress={() => setNightMode(!nightMode)}
-                >
-                    {nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
-                </Button>
+                {/* Night mode FAB moved to bottom left */}
                 <TextInput
                     onChangeText={(name) => setName(name)}
                     onSubmitEditing={async () => {
@@ -109,29 +101,38 @@ export default function HomeScreen() {
                 size="small"
             /> */}
             <FAB
+                icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
+                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, zIndex: 1000, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                onPress={() => setNightMode(!nightMode)}
+                color={nightMode ? 'red' : '#000'}
+                accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+                size="small"
+            />
+            <FAB
                 icon="import"
-                style={{ position: 'absolute', margin: 16, right: 13, bottom: 0, zIndex: 1000 }}
+                style={{ position: 'absolute', margin: 16, left: 80, bottom: 0, zIndex: 1000, backgroundColor: nightMode ? '#181818' : '#fff' }}
+                color={nightMode ? 'red' : '#000'}
                 onPress={async () => {
                     await importAllData(() => {
                         hydrate(); // Reload groups after import is confirmed and completed
                     });
                 }}
-                label="Import"
                 size="small"
             />
-            <FAB
-                icon="delete-sweep"
-                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, zIndex: 1000 }}
-                onPress={async () => {
-                    console.log('Clear All pressed');
-                    const clear = useGroupsStore.getState().deleteAll;
-                    await clear();
-                    console.log('All groups cleared, hydrating...');
-                    hydrate();
-                }}
-                label="Clear All"
-                size="small"
-            />
+            {!nightMode && (
+                <FAB
+                    icon="delete-sweep"
+                    style={{ position: 'absolute', margin: 16, left: 170, bottom: 0, zIndex: 1000 }}
+                    onPress={async () => {
+                        console.log('Clear All pressed');
+                        const clear = useGroupsStore.getState().deleteAll;
+                        await clear();
+                        console.log('All groups cleared, hydrating...');
+                        hydrate();
+                    }}
+                    size="small"
+                />
+            )}
         </SafeAreaView>
     );
 }
