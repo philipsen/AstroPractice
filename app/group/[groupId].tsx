@@ -10,8 +10,10 @@ import { FAB, IconButton, Surface, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DegsFormat } from '../../src/helpers/astron/init';
 import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../src/helpers/ObservationRepository';
+import { useNightMode } from '../../src/state/NightModeContext';
 
 export default function Group() {
+    const { nightMode } = useNightMode();
     const groupId = Number(useLocalSearchParams().groupId);
     const select = useGroupsStore((s: any) => s.select);
     const getById = useGroupsStore((s: any) => s.getById);
@@ -62,9 +64,9 @@ export default function Group() {
     const router = useRouter();
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: nightMode ? '#181818' : '#fff' }}>
             <View style={{ margin: 16, gap: 8 }}>
-                <Text variant="titleMedium">Group Name</Text>
+                <Text variant="titleMedium" style={{ color: nightMode ? 'red' : undefined }}>Group Name</Text>
                 <TextInput
                     value={name}
                     onChangeText={setName}
@@ -73,9 +75,17 @@ export default function Group() {
                     onBlur={async () => {
                         updateGroup(groupId, name, description);
                     }}
+                    theme={{
+                        colors: {
+                            onSurface: nightMode ? 'red' : '#000',
+                            primary: nightMode ? 'red' : '#000',
+                            background: nightMode ? '#181818' : '#fff',
+                            placeholder: nightMode ? 'red' : '#888'
+                        }
+                    }}
                 />
 
-                <Text variant="titleMedium">Description</Text>
+                <Text variant="titleMedium" style={{ color: nightMode ? 'red' : undefined }}>Description</Text>
                 <TextInput
                     value={description}
                     onChangeText={setDescription}
@@ -85,18 +95,26 @@ export default function Group() {
                     placeholder="Enter group description"
                     onBlur={async () => {
                         updateGroup(groupId, name, description);
-                    }}                    
+                    }}
+                    theme={{
+                        colors: {
+                            onSurface: nightMode ? 'red' : '#000',
+                            primary: nightMode ? 'red' : '#000',
+                            background: nightMode ? '#181818' : '#fff',
+                            placeholder: nightMode ? 'red' : '#888'
+                        }
+                    }}
                 />
             </View>
 
             <FlatList
                 data={observations}
                 renderItem={({ item }) =>
-                    <Surface style={{ elevation: 8, borderRadius: 12, margin: 6, padding: 8 }}>
+                    <Surface style={{ elevation: 8, borderRadius: 12, margin: 6, padding: 8, backgroundColor: nightMode ? '#111' : '#fff' }}>
                         <Pressable onPress={() => router.push(`/observation/${item.id}`)}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text> {item.object}, {DegsFormat(item.angle)}</Text>
-                                <Text> {new Date(item.created).toLocaleString()} </Text>
+                                <Text style={{ color: nightMode ? 'red' : '#000' }}> {item.object}, {DegsFormat(item.angle)}</Text>
+                                <Text style={{ color: nightMode ? 'red' : '#000' }}> {new Date(item.created).toLocaleString()} </Text>
                                 <IconButton
                                     mode="contained"
                                     onPress={async () => {
@@ -105,6 +123,8 @@ export default function Group() {
                                         refetchItems();
                                     }}
                                     icon="delete"
+                                    style={{ borderRadius: 20 }}
+                                    iconColor={nightMode ? 'red' : '#000'}
                                 />
                             </View>
                         </Pressable>

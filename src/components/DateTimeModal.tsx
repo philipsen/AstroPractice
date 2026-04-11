@@ -1,18 +1,18 @@
 
 // DateTimeModal.tsx
 import DateTimePicker, {
-  DateTimePickerEvent,
+    DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import * as React from 'react';
 import { Platform, View } from 'react-native';
 import {
-  Button,
-  Divider,
-  IconButton,
-  Modal,
-  Portal,
-  Text,
-  TextInput,
+    Button,
+    Divider,
+    IconButton,
+    Modal,
+    Portal,
+    Text,
+    TextInput,
 } from 'react-native-paper';
 
 type DateTimeModalProps = {
@@ -238,6 +238,14 @@ const StepField: React.FC<{
         style={{ width: 64 }}
         contentStyle={{ textAlign: 'center' }}
         label={label}
+        theme={{
+          colors: {
+            onSurface: '#ff2222',
+            primary: '#ff2222',
+            background: '#181818',
+            placeholder: '#ff2222'
+          }
+        }}
       />
       <IconButton
         icon="plus"

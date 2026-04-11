@@ -2,13 +2,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import {
-  Card,
-  Divider,
-  IconButton,
-  Modal,
-  Portal,
-  Text,
-  TextInput,
+    Card,
+    Divider,
+    IconButton,
+    Modal,
+    Portal,
+    Text,
+    TextInput,
 } from 'react-native-paper';
 
 export default function UTCDateTimePicker({ value, onChange }) {
@@ -103,6 +103,14 @@ export default function UTCDateTimePicker({ value, onChange }) {
                 style={{ width: 50, height: 40, marginHorizontal: 10 }}
                 keyboardType="numeric"
                 dense={true}
+                theme={{
+                  colors: {
+                    onSurface: '#ff2222',
+                    primary: '#ff2222',
+                    background: '#181818',
+                    placeholder: '#ff2222'
+                  }
+                }}
               ></TextInput>
               <IconButton icon="plus" onPress={() => setHours((h) => (h + 1) % 24)} />
             </View>
@@ -123,6 +131,14 @@ export default function UTCDateTimePicker({ value, onChange }) {
                 style={{ width: 50, height: 40, marginHorizontal: 10 }}
                 keyboardType="numeric"
                 dense={true}
+                theme={{
+                  colors: {
+                    onSurface: '#ff2222',
+                    primary: '#ff2222',
+                    background: '#181818',
+                    placeholder: '#ff2222'
+                  }
+                }}
               ></TextInput>
               <IconButton icon="plus" onPress={() => setMinutes((m) => (m + 1) % 60)} />
             </View>
@@ -142,6 +158,14 @@ export default function UTCDateTimePicker({ value, onChange }) {
                 }}
                 style={{ width: 50, height: 40, marginHorizontal: 10 }}
                 keyboardType="numeric"
+                theme={{
+                  colors: {
+                    onSurface: '#ff2222',
+                    primary: '#ff2222',
+                    background: '#181818',
+                    placeholder: '#ff2222'
+                  }
+                }}
               ></TextInput> 
               {/* <Text>{pad(seconds)}</Text> */}
               <IconButton icon="plus" onPress={() => setSeconds((s) => (s + 1) % 60)} />

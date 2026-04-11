@@ -14,11 +14,13 @@ import { Dropdown } from 'react-native-paper-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GetBestFitObjects } from "../../../../src/helpers/astron/init";
 import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
+import { useNightMode } from '../../../../src/state/NightModeContext';
 const bodyNames = BODY_NAMES.map(name => name.toLowerCase());
 
 
 
 export default function ObservationEdit() {
+    const { nightMode } = useNightMode();
     const observation = useObservationStore((s) => s.observation);
     const updateField = useObservationStore((s) => s.updateField);
     const router = useRouter();
@@ -100,7 +102,7 @@ export default function ObservationEdit() {
     }, [observation?.id]);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#181818' }}>
             <FAB
                 icon="arrow-left"
                 style={{ position: 'absolute', margin: 16, left: 10, bottom: 0 }}
@@ -118,7 +120,7 @@ export default function ObservationEdit() {
                     <Text>x{delay}x`</Text>
                     <TextInput
                         mode="outlined"
-                        theme={{ roundness: 5 }}
+                        theme={{ roundness: 5, colors: { onSurface: nightMode ? 'red' : '#000', primary: nightMode ? 'red' : '#000', background: nightMode ? '#181818' : '#fff', placeholder: nightMode ? 'red' : '#888' } }}
                         style={{ margin: 2, width: 80, left: 30 }}
                         dense={true}
                         ref={refDelay}
