@@ -12,32 +12,42 @@ const rowStyle = {
 function KVRow({
   label,
   value,
+  labelWidth,
+  bold,
+  nightMode,
 }: {
   label: string;
   value: string;
   labelWidth: number;
   bold?: boolean;
+  nightMode?: boolean;
 }) {
+  const textColor = nightMode ? '#ff3333' : undefined;
   return (
     <View style={rowStyle}>
-      <Text> {label} </Text>
-      <Text> {value} </Text>
+      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}> {label} </Text>
+      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}> {value} </Text>
     </View>
   );
 }
 function KVRow3({
   label,
   value,
+  labelWidth,
+  bold,
+  nightMode,
 }: {
   label: string;
   value: string;
   labelWidth: number;
   bold?: boolean;
+  nightMode?: boolean;
 }) {
+  const textColor = nightMode ? '#ff3333' : undefined;
   return (
     <View style={rowStyle}>
-      <Text>{label}</Text>
-      <Text>{value}</Text>
+      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}>{label}</Text>
+      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}>{value}</Text>
       <Text>{" "}</Text>
     </View>
   );

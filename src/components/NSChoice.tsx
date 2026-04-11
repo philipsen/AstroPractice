@@ -5,9 +5,10 @@ import { Text } from "react-native-paper";
 type Props = {
     value: 'N' | 'S' | 'E' | 'W';
     onChange: (value: 'N' | 'S' | 'E' | 'W') => void;
+    nightMode?: boolean;
 }
 
-export default function NSChoice({ value, onChange }: Props) {
+export default function NSChoice({ value, onChange, nightMode }: Props) {
     function toggle(v: string) {
         switch (v) {
             case 'N':
@@ -22,12 +23,12 @@ export default function NSChoice({ value, onChange }: Props) {
     }
     const [val, setVal] = useState(value);
     return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 8, margin: 2, padding: 8, borderWidth: 1, borderRadius: 5, borderColor: '#ccc' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 8, margin: 2, padding: 8, borderWidth: 1, borderRadius: 5, borderColor: nightMode ? 'red' : '#000' }}>
             <Pressable onPress={() => {
                 setVal(toggle(val));
                 onChange(toggle(val));
             }}>
-                <Text>{val}</Text>
+                <Text style={{ color: nightMode ? 'red' : '#000' }}>{val}</Text>
             </Pressable>
         </View>
     );

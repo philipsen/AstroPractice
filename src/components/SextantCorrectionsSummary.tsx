@@ -6,7 +6,8 @@ import { View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import { HoeCorr } from '../helpers/astron/init';
 import { formatDeg, formatMinutesAsDegMin, minutesToDeg } from '../helpers/MinutesToDeg';
-import { ObservationEntity } from '../models/observationEntity';
+import { useNightMode } from '../state/NightModeContext';
+import { ObservationEntity } from '../types/ObservationEntity';
 import { KVRow, KVRow3 } from './KVRow';
 
 
@@ -42,8 +43,8 @@ export default function SextantCorrectionsSummary({
   data,
   title = 'Sextant Corrections',
   labelWidth = 100,
-}: SextantCorrectionsSummaryProps
-) {
+}: SextantCorrectionsSummaryProps) {
+  const { nightMode } = useNightMode();
   const sa = data.observation.angle; // deg (already decimal)
   const ieDeg = minutesToDeg(data.observation.indexError); // deg
   const dipDeg = minutesToDeg(HoeCorr(data.observation.observerAltitude));       // deg
@@ -62,9 +63,10 @@ export default function SextantCorrectionsSummary({
     parrDeg,
   ]);
 
+  const textColor = nightMode ? '#ff3333' : undefined;
   return (
     <View>
-      <Text>
+      <Text style={textColor ? { color: textColor, fontWeight: 'bold' } : { fontWeight: 'bold' }}>
         {title}
       </Text>
 
@@ -73,11 +75,13 @@ export default function SextantCorrectionsSummary({
         label="Sextant Altitude"
         value={formatDeg(sa)}
         labelWidth={labelWidth}
+        nightMode={nightMode}
       />
       <KVRow
         label="Index Error"
         value={formatMinutesAsDegMin(data.observation.indexError)}
         labelWidth={labelWidth}
+        nightMode={nightMode}
       />
       <Divider/>
 
@@ -87,11 +91,13 @@ export default function SextantCorrectionsSummary({
         value={formatDeg(observed)}
         labelWidth={labelWidth}
         bold
+        nightMode={nightMode}
       />
       <KVRow
         label="Dip"
         value={formatMinutesAsDegMin(dipDeg * 60)}
         labelWidth={labelWidth}
+        nightMode={nightMode}
       />
       <Divider/>
 
@@ -101,10 +107,11 @@ export default function SextantCorrectionsSummary({
         value={formatDeg(apparent)}
         labelWidth={labelWidth}
         bold
+        nightMode={nightMode}
       />
 
       {/* Altitude Correction (group heading, subtle) */}
-      <Text>
+      <Text style={textColor ? { color: textColor } : undefined}>
         Altitude Correction
       </Text>
 
@@ -113,16 +120,19 @@ export default function SextantCorrectionsSummary({
         label="Refr"
         value={formatMinutesAsDegMin(data.corrections.refraction * 60)}
         labelWidth={labelWidth}
+        nightMode={nightMode}
       />
       <KVRow3
         label="SD corr"
         value={formatMinutesAsDegMin(data.corrections.sd * 60)}
         labelWidth={labelWidth}
+        nightMode={nightMode}
       />
       <KVRow3
         label="parr corr"
         value={formatMinutesAsDegMin(data.corrections.parallax * 60)}
         labelWidth={labelWidth}
+        nightMode={nightMode}
       />
       <Divider/>
 
@@ -132,6 +142,7 @@ export default function SextantCorrectionsSummary({
         value={formatDeg(trueAlt)}
         labelWidth={labelWidth}
         bold
+        nightMode={nightMode}
       />
 
     </View>
