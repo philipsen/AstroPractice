@@ -8,6 +8,7 @@ import { FAB, Text, TextInput, useTheme } from "react-native-paper";
 import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
 
 import CustomDropdownInput from '@/src/components/CustomDropdownInput';
+import OutlinedObservationTextInput from '@/src/components/OutlinedObservationTextInput';
 import NSChoice from "@/src/components/NSChoice";
 import UTCDateTimePicker from "@/src/components/UTCDateTimePicker";
 import { useObservationStore } from "@/src/state/useObservationStore";
@@ -129,13 +130,12 @@ export default function ObservationEdit() {
                         value={timeOfObservation}
                         onChange={(d: any) => setTimeOfObservation(d)}
                     />
-                    <TextInput
-                        mode="outlined"
-                        style={{ margin: 2, width: 80, left: 30 }}
+                    <OutlinedObservationTextInput
+                        style={{ width: 80, left: 30 }}
                         dense={true}
-                        ref={refDelay}
+                        inputRef={refDelay}
                         label="Delay"
-                        onChangeText={setDelay}                             
+                        onChangeText={setDelay}
                         value={delay ? delay.toString() : "0"}
                         returnKeyType="next"
                         inputMode="decimal"
@@ -147,16 +147,13 @@ export default function ObservationEdit() {
                             updateField('delay', Number(delay));
                             delayGate.onBlur();
                         }}
-                        right={
-                            <TextInput.Affix text="s" />
-                        } />
+                        right={<TextInput.Affix text="s" />}
+                    />
                 </View>
 
                <View style={{ flexDirection: 'row' }}>
-                    <TextInput
-                        mode="outlined"
-                        style={{ margin: 2 }}
-                        ref={refAngleDegrees}
+                    <OutlinedObservationTextInput
+                        inputRef={refAngleDegrees}
                         label="deg"
                         onChangeText={text => setAngleDegrees((text))}
                         value={angleDegrees}
@@ -171,10 +168,8 @@ export default function ObservationEdit() {
                             updateField('angle', angle);
                         }}
                     />
-                    <TextInput
-                        mode="outlined"
-                        style={{ margin: 2 }}
-                        ref={refAngleMinutes}
+                    <OutlinedObservationTextInput
+                        inputRef={refAngleMinutes}
                         label="min"
                         onChangeText={text => setAngleMinutes((text))}
                         value={angleMinutes}
@@ -190,10 +185,8 @@ export default function ObservationEdit() {
                         inputMode="decimal"
                     />
 
-                    <TextInput
-                        mode="outlined"
-                        style={{ margin: 2 }}
-                        ref={refIndexError}
+                    <OutlinedObservationTextInput
+                        inputRef={refIndexError}
                         label="idx err"
                         onChangeText={text => setIndexError(text)}
                         value={indexError ? indexError.toString() : "0"}
@@ -208,10 +201,8 @@ export default function ObservationEdit() {
                         inputMode="decimal"
                     />
 
-                    <TextInput
-                        mode="outlined"
-                        style={{ margin: 2 }}
-                        ref={refHeight}
+                    <OutlinedObservationTextInput
+                        inputRef={refHeight}
                         label="height"
                         onChangeText={text => setObserverAltitude(text)}
                         value={observerAltitude ? observerAltitude.toString() : "0"}
@@ -223,7 +214,7 @@ export default function ObservationEdit() {
                         onBlur={() => {
                             updateField('observerAltitude', Number(observerAltitude));
                             heightGate.onBlur();
-                        }}              
+                        }}
                     />
                 </View> 
  
@@ -276,15 +267,13 @@ export default function ObservationEdit() {
                 </View>
 
                 <View style={{ flexDirection: 'row' }}>
-                    <TextInput
+                    <OutlinedObservationTextInput
                         label="latitude"
                         onChangeText={text => setLatitudeDegrees(text)}
                         value={latitudeDegrees}
-                        right={
-                            <TextInput.Affix text="°" />
-                        }
+                        right={<TextInput.Affix text="°" />}
                         inputMode="decimal"
-                        ref={refLatitudeDegrees}
+                        inputRef={refLatitudeDegrees}
                         onSubmitEditing={() => refLatitudeMinutes.current?.focus()}
                         selectTextOnFocus={latitudeDegreesGate.selectTextOnFocus}
                         onFocus={latitudeDegreesGate.onFocus}
@@ -293,18 +282,14 @@ export default function ObservationEdit() {
                             updateField('latitude', latitude);
                             latitudeDegreesGate.onBlur();
                         }}
-                        mode="outlined"
-                        style={{ margin: 2 }}
                     />
-                    <TextInput
+                    <OutlinedObservationTextInput
                         label=" "
                         onChangeText={text => setLatitudeMinutes(text)}
                         value={latitudeMinutes}
-                        right={
-                            <TextInput.Affix text="′" />
-                        }
+                        right={<TextInput.Affix text="′" />}
                         inputMode="decimal"
-                        ref={refLatitudeMinutes}
+                        inputRef={refLatitudeMinutes}
                         onSubmitEditing={() => refLongitudeDegrees.current?.focus()}
                         selectTextOnFocus={latitudeMinutesGate.selectTextOnFocus}
                         onFocus={latitudeMinutesGate.onFocus}
@@ -313,8 +298,6 @@ export default function ObservationEdit() {
                             updateField('latitude', latitude);
                             latitudeMinutesGate.onBlur();
                         }}
-                        mode="outlined"
-                        style={{ margin: 2 }}
                     />
                     <NSChoice value={nors} onChange={value => {
                         setNors(value);
@@ -324,15 +307,13 @@ export default function ObservationEdit() {
 
                 </View>     
                 <View style={{ flexDirection: 'row' }}>
-                    <TextInput
+                    <OutlinedObservationTextInput
                         label="longitude"
                         onChangeText={text => setLongitudeDegrees(text)}
                         value={longitudeDegrees}
-                        right={
-                            <TextInput.Affix text="°" />
-                        }
+                        right={<TextInput.Affix text="°" />}
                         inputMode="decimal"
-                        ref={refLongitudeDegrees}
+                        inputRef={refLongitudeDegrees}
                         onSubmitEditing={() => refLongitudeMinutes.current?.focus()}
                         selectTextOnFocus={longitudeDegreesGate.selectTextOnFocus}
                         onFocus={longitudeDegreesGate.onFocus}
@@ -341,17 +322,14 @@ export default function ObservationEdit() {
                             updateField('longitude', longitude);
                             longitudeDegreesGate.onBlur();
                         }}
-                        mode="outlined"
-                    />  
-                    <TextInput
+                    />
+                    <OutlinedObservationTextInput
                         label=" "
                         onChangeText={text => setLongitudeMinutes(text)}
                         value={longitudeMinutes}
-                        right={
-                            <TextInput.Affix text="′" />
-                        }
+                        right={<TextInput.Affix text="′" />}
                         inputMode="decimal"
-                        ref={refLongitudeMinutes}
+                        inputRef={refLongitudeMinutes}
                         selectTextOnFocus={longitudeMinutesGate.selectTextOnFocus}
                         onFocus={longitudeMinutesGate.onFocus}
                         onBlur={() => {
@@ -359,7 +337,6 @@ export default function ObservationEdit() {
                             updateField('longitude', longitude);
                             longitudeMinutesGate.onBlur();
                         }}
-                        mode="outlined"
                     />
                     <NSChoice value={eorw} onChange={value => {
                         setEorw(value);
