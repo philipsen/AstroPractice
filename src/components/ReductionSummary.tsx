@@ -2,6 +2,7 @@
 import { View } from "react-native";
 import { Divider, Switch, Text, useTheme } from "react-native-paper";
 import { Degs_f } from "../helpers/astron/Astron";
+import { effectiveObservationDateUtc } from "../helpers/astron/init";
 import { SightReductionData } from "../models/SightReductionData";
 import { KVRow } from "./KVRow";
 
@@ -15,7 +16,7 @@ export default function ReductionSummary({ data }: { data: SightReductionData })
         <View>
             <KVRow
                 label="GMT"
-                value={(new Date(data.observation.created)).toUTCString()}
+                value={effectiveObservationDateUtc(data.observation).toUTCString()}
                 labelWidth={150}
             />
             <KVRow

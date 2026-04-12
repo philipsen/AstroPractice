@@ -18,6 +18,7 @@ import {
   SEL_BODY_ROW,
   SetDatetime,
   SetObsAltitude,
+  SetProgrammaticIndexCorrectionMinutes,
   SetSelBodyAltLimb,
   SetSextantAngle,
 } from "./Astron";
@@ -52,10 +53,29 @@ export function SetPosition(lat: number, long: number) {
   AstronSetpos(lat, long);
 }
 
+/**
+ * UTC instant passed to Astron: stored watch/recorded time `created` plus `delay` seconds
+ * (chronometer or recording correction). `delay` is in seconds; invalid values are treated as 0.
+ */
+export function effectiveObservationDateUtc(obs: {
+  created: Date | string | number;
+  delay?: number | null;
+}): Date {
+  const ms =
+    obs.created instanceof Date
+      ? obs.created.getTime()
+      : new Date(obs.created).getTime();
+  const sec = Number(obs.delay);
+  const d = Number.isFinite(sec) ? sec : 0;
+  return new Date(ms + d * 1000);
+}
+
 export function SetObservationData(obs) {
   if (DEBUG_ASTRON) console.log("SetObservationData called with obs =", obs);
-  SetDatetime(obs.created);
+  SetDatetime(effectiveObservationDateUtc(obs));
   SetBody(obs.object);
+  const ie = Number(obs.indexError);
+  SetProgrammaticIndexCorrectionMinutes(Number.isFinite(ie) ? ie : 0);
   SetSextantAngle(obs.angle);
   SetPosition(obs.latitude, obs.longitude);
   SetObsAltitude(obs.observerAltitude);

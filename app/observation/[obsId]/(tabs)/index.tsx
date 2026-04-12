@@ -8,12 +8,11 @@ import { FAB, Text, TextInput, useTheme } from "react-native-paper";
 import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
 
 import CelestialBodyPicker from '@/src/components/CelestialBodyPicker';
-import CustomDropdownInput from '@/src/components/CustomDropdownInput';
+import OptionSheetPicker from '@/src/components/OptionSheetPicker';
 import NSChoice from "@/src/components/NSChoice";
 import OutlinedObservationTextInput from '@/src/components/OutlinedObservationTextInput';
 import UTCDateTimePicker from "@/src/components/UTCDateTimePicker";
 import { useObservationStore } from "@/src/state/useObservationStore";
-import { Dropdown } from 'react-native-paper-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
 import InitAstron, { GetBestFitObjects } from "../../../../src/helpers/astron/init";
@@ -67,6 +66,14 @@ export default function ObservationEdit() {
         { label: 'Center', value: 'center' },
         { label: 'Upper', value: 'upper' }
     ], []);
+
+    const horizonOptions = React.useMemo(
+        () => [
+            { label: 'Natural', value: 'natural' },
+            { label: 'Artificial', value: 'artificial' },
+        ],
+        []
+    );
 
     const [limb, setLimb] = useState<string>("");
     const [artificialHorizon, setArtificialHorizon] = useState(false);
@@ -235,22 +242,20 @@ export default function ObservationEdit() {
                 </View> 
  
                 <View style={{ flexDirection: 'row' }}>
-                    <View style={{ margin: 2 }}>
-                        <Dropdown
-                            mode="outlined"
+                    <View style={{ margin: 2, flex: 1 }}>
+                        <OptionSheetPicker
                             label="limb"
                             placeholder="Select limb"
                             options={limbTypeOptions}
-                            value={limb.toString()}
-                            onSelect={limb => {
-                                setLimb(limb ?? "lower");
-                                const limbIndex = limbTypeOptions.findIndex(option => option.value === limb);
+                            value={limb}
+                            onSelect={(v) => {
+                                setLimb(v);
+                                const limbIndex = limbTypeOptions.findIndex((o) => o.value === v);
                                 updateField('limbType', limbIndex);
                             }}
-                            CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
-                    <View style={{ margin: 2, flex: 0.7 }}>
+                    <View style={{ margin: 2, flex: 1.2 }}>
                         <CelestialBodyPicker
                             label="body"
                             placeholder="Select body"
@@ -266,18 +271,16 @@ export default function ObservationEdit() {
                             }}
                         />
                     </View>
-                    <View style={{ margin: 2, flex: .7 }}>
-                        <Dropdown
-                            mode="outlined"
+                    <View style={{ margin: 2, flex: 1 }}>
+                        <OptionSheetPicker
                             label="horizon"
                             placeholder="Select horizon"
-                            options={[{ label: 'Natural', value: 'natural' }, { label: 'Artificial', value: 'artificial' }]}
+                            options={horizonOptions}
                             value={artificialHorizon ? 'artificial' : 'natural'}
-                            onSelect={(value) => {
-                                updateField('horizon', value === 'artificial' ? 1 : 0);
-                                setArtificialHorizon(value === 'artificial');
+                            onSelect={(v) => {
+                                updateField('horizon', v === 'artificial' ? 1 : 0);
+                                setArtificialHorizon(v === 'artificial');
                             }}
-                            CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
                 </View>
