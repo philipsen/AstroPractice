@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { FAB, Text, TextInput } from "react-native-paper";
+import { FAB, Text, TextInput, useTheme } from "react-native-paper";
 
 import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
 
@@ -19,7 +19,8 @@ import { useNightMode } from '../../../../src/state/NightModeContext';
 const bodyNames = BODY_NAMES.map(name => name.toLowerCase());
 
 export default function ObservationEdit() {
-    const { nightMode, setNightMode } = useNightMode();
+    const { setNightMode } = useNightMode();
+    const { colors, dark } = useTheme();
     const observation = useObservationStore((s) => s.observation);
     const updateField = useObservationStore((s) => s.updateField);
     const router = useRouter();
@@ -101,25 +102,25 @@ export default function ObservationEdit() {
     }, [observation, limbTypeOptions]);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: nightMode ? '#181818' : '#fff' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
             {/* FAB row: back and night mode side by side at bottom left */}
             <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
                 <FAB
                     icon="arrow-left"
-                    style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                    color={nightMode ? 'red' : '#000'}
+                    style={{ margin: 16, backgroundColor: colors.surface }}
+                    color={colors.onSurface}
                     onPress={() => {
                         router.back();
                     }}
                     size="small"
                 />
                 <FAB
-                    icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
-                    style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                    onPress={() => setNightMode(!nightMode)}
-                    color={nightMode ? 'red' : '#000'}
+                    icon={dark ? 'white-balance-sunny' : 'weather-night'}
+                    style={{ margin: 16, backgroundColor: colors.surface }}
+                    onPress={() => setNightMode(!dark)}
+                    color={colors.onSurface}
                     size="small"
-                    accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+                    accessibilityLabel={dark ? 'Switch to Light Mode' : 'Switch to Night Mode'}
                 />
             </View>
             <View>
@@ -130,19 +131,7 @@ export default function ObservationEdit() {
                     />
                     <TextInput
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, width: 80, left: 30, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2, width: 80, left: 30 }}
                         dense={true}
                         ref={refDelay}
                         label="Delay"
@@ -166,19 +155,7 @@ export default function ObservationEdit() {
                <View style={{ flexDirection: 'row' }}>
                     <TextInput
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2 }}
                         ref={refAngleDegrees}
                         label="deg"
                         onChangeText={text => setAngleDegrees((text))}
@@ -196,19 +173,7 @@ export default function ObservationEdit() {
                     />
                     <TextInput
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2 }}
                         ref={refAngleMinutes}
                         label="min"
                         onChangeText={text => setAngleMinutes((text))}
@@ -227,19 +192,7 @@ export default function ObservationEdit() {
 
                     <TextInput
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2 }}
                         ref={refIndexError}
                         label="idx err"
                         onChangeText={text => setIndexError(text)}
@@ -257,19 +210,7 @@ export default function ObservationEdit() {
 
                     <TextInput
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2 }}
                         ref={refHeight}
                         label="height"
                         onChangeText={text => setObserverAltitude(text)}
@@ -299,7 +240,7 @@ export default function ObservationEdit() {
                                 const limbIndex = limbTypeOptions.findIndex(option => option.value === limb);
                                 updateField('limbType', limbIndex);
                             }}
-                            CustomDropdownInput={props => <CustomDropdownInput {...props} nightMode={nightMode} />}
+                            CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
                     <View style={{ margin: 2, flex: .7 }}>
@@ -315,7 +256,7 @@ export default function ObservationEdit() {
                                     setBody(bodyNames.indexOf(value));
                                 }
                             }}
-                            CustomDropdownInput={props => <CustomDropdownInput {...props} nightMode={nightMode} />}
+                            CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
                     <View style={{ margin: 2, flex: .7 }}>
@@ -329,7 +270,7 @@ export default function ObservationEdit() {
                                 updateField('horizon', value === 'artificial' ? 1 : 0);
                                 setArtificialHorizon(value === 'artificial');
                             }}
-                            CustomDropdownInput={props => <CustomDropdownInput {...props} nightMode={nightMode} />}
+                            CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
                 </View>
@@ -353,19 +294,7 @@ export default function ObservationEdit() {
                             latitudeDegreesGate.onBlur();
                         }}
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2 }}
                     />
                     <TextInput
                         label=" "
@@ -385,25 +314,13 @@ export default function ObservationEdit() {
                             latitudeMinutesGate.onBlur();
                         }}
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ margin: 2, color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
+                        style={{ margin: 2 }}
                     />
                     <NSChoice value={nors} onChange={value => {
                         setNors(value);
                         const latitude = (Number(latitudeDegrees) + Number(latitudeMinutes) / 60) * (value === 'N' ? 1 : -1);
                         updateField('latitude', latitude);
-                    }} nightMode={nightMode} />
+                    }} />
 
                 </View>     
                 <View style={{ flexDirection: 'row' }}>
@@ -425,19 +342,6 @@ export default function ObservationEdit() {
                             longitudeDegreesGate.onBlur();
                         }}
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
                     />  
                     <TextInput
                         label=" "
@@ -456,41 +360,28 @@ export default function ObservationEdit() {
                             longitudeMinutesGate.onBlur();
                         }}
                         mode="outlined"
-                        theme={{
-                            roundness: 5,
-                            colors: {
-                                onSurface: nightMode ? 'red' : '#000',
-                                primary: nightMode ? 'red' : '#000',
-                                background: nightMode ? '#181818' : '#fff',
-                                placeholder: nightMode ? 'red' : '#888',
-                                text: nightMode ? 'red' : '#000',
-                            }
-                        }}
-                        style={{ color: nightMode ? 'red' : '#000' }}
-                        outlineColor={nightMode ? 'red' : '#000'}
-                        activeOutlineColor={nightMode ? 'red' : '#000'}
                     />
                     <NSChoice value={eorw} onChange={value => {
                         setEorw(value);
                         const longitude = (Number(longitudeDegrees) + Number(longitudeMinutes) / 60) * (value === 'E' ? 1 : -1);
                         updateField('longitude', longitude);
-                    }} nightMode={nightMode} />
+                    }} />
                 </View> 
 
-                <View style={{ marginTop: 20, padding: 10, marginLeft: 55, marginRight: 55, borderWidth: 1, borderColor: nightMode ? 'red' : '#000', borderRadius: 8 }}>
-                    <Text variant="titleMedium" style={{ marginBottom: 10, color: nightMode ? 'red' : '#000' }}>Best Matching Objects</Text>
+                <View style={{ marginTop: 20, padding: 10, marginLeft: 55, marginRight: 55, borderWidth: 1, borderColor: colors.outline, borderRadius: 8 }}>
+                    <Text variant="titleMedium" style={{ marginBottom: 10, color: colors.onSurface }}>Best Matching Objects</Text>
                     {/* Header Row */}
-                    <View style={{ flexDirection: 'row', paddingBottom: 5, borderBottomWidth: 1, borderBottomColor: nightMode ? 'red' : '#000' }}>
-                        <Text style={{ flex: 2, fontWeight: 'bold', color: nightMode ? 'red' : '#000' }}>Object</Text>
-                        <Text style={{ flex: 1, fontWeight: 'bold', textAlign: 'center', color: nightMode ? 'red' : '#000' }}>Difference</Text>
-                        <Text style={{ flex: 1, fontWeight: 'bold', textAlign: 'center', color: nightMode ? 'red' : '#000' }}>Azimuth</Text>
+                    <View style={{ flexDirection: 'row', paddingBottom: 5, borderBottomWidth: 1, borderBottomColor: colors.outline }}>
+                        <Text style={{ flex: 2, fontWeight: 'bold', color: colors.onSurface }}>Object</Text>
+                        <Text style={{ flex: 1, fontWeight: 'bold', textAlign: 'center', color: colors.onSurface }}>Difference</Text>
+                        <Text style={{ flex: 1, fontWeight: 'bold', textAlign: 'center', color: colors.onSurface }}>Azimuth</Text>
                     </View>
                     {/* Data Rows */}
                     {GetBestFitObjects(5).map((obj, index) => (
-                        <View key={index} style={{ flexDirection: 'row', paddingVertical: 4, borderBottomWidth: 0.5, borderBottomColor: nightMode ? 'red' : '#000' }}>
-                            <Text style={{ flex: 2, color: nightMode ? 'red' : '#000' }}>{obj.name}</Text>
-                            <Text style={{ flex: 1, textAlign: 'center', color: nightMode ? 'red' : '#000' }}>{formatDeg(Number(obj.difference))}</Text>
-                            <Text style={{ flex: 1, textAlign: 'center', color: nightMode ? 'red' : '#000' }}>{Number(obj.azimuth).toFixed(0)}°</Text>
+                        <View key={index} style={{ flexDirection: 'row', paddingVertical: 4, borderBottomWidth: 0.5, borderBottomColor: colors.outline }}>
+                            <Text style={{ flex: 2, color: colors.onSurface }}>{obj.name}</Text>
+                            <Text style={{ flex: 1, textAlign: 'center', color: colors.onSurface }}>{formatDeg(Number(obj.difference))}</Text>
+                            <Text style={{ flex: 1, textAlign: 'center', color: colors.onSurface }}>{Number(obj.azimuth).toFixed(0)}°</Text>
                         </View>
                     ))}
                 </View>

@@ -6,14 +6,15 @@ import * as Location from 'expo-location';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
-import { FAB, IconButton, Surface, Text, TextInput } from 'react-native-paper';
+import { FAB, IconButton, Surface, Text, TextInput, useTheme } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DegsFormat } from '../../src/helpers/astron/init';
 import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../src/helpers/ObservationRepository';
 import { useNightMode } from '../../src/state/NightModeContext';
 
 export default function Group() {
-    const { nightMode, setNightMode } = useNightMode();
+    const { setNightMode } = useNightMode();
+    const { colors, dark } = useTheme();
     const groupId = Number(useLocalSearchParams().groupId);
     const select = useGroupsStore((s: any) => s.select);
     const getById = useGroupsStore((s: any) => s.getById);
@@ -64,9 +65,9 @@ export default function Group() {
     const router = useRouter();
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: nightMode ? '#181818' : '#fff' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
             <View style={{ margin: 16, gap: 8 }}>
-                <Text variant="titleMedium" style={{ color: nightMode ? 'red' : undefined }}>Group Name</Text>
+                <Text variant="titleMedium" style={{ color: colors.onSurface }}>Group Name</Text>
                 <TextInput
                     value={name}
                     onChangeText={setName}
@@ -75,17 +76,9 @@ export default function Group() {
                     onBlur={async () => {
                         updateGroup(groupId, name, description);
                     }}
-                    theme={{
-                        colors: {
-                            onSurface: nightMode ? 'red' : '#000',
-                            primary: nightMode ? 'red' : '#000',
-                            background: nightMode ? '#181818' : '#fff',
-                            placeholder: nightMode ? 'red' : '#888'
-                        }
-                    }}
                 />
 
-                <Text variant="titleMedium" style={{ color: nightMode ? 'red' : undefined }}>Description</Text>
+                <Text variant="titleMedium" style={{ color: colors.onSurface }}>Description</Text>
                 <TextInput
                     value={description}
                     onChangeText={setDescription}
@@ -96,25 +89,17 @@ export default function Group() {
                     onBlur={async () => {
                         updateGroup(groupId, name, description);
                     }}
-                    theme={{
-                        colors: {
-                            onSurface: nightMode ? 'red' : '#000',
-                            primary: nightMode ? 'red' : '#000',
-                            background: nightMode ? '#181818' : '#fff',
-                            placeholder: nightMode ? 'red' : '#888'
-                        }
-                    }}
                 />
             </View>
 
             <FlatList
                 data={observations}
                 renderItem={({ item }) =>
-                    <Surface style={{ elevation: 8, borderRadius: 12, margin: 6, padding: 8, backgroundColor: nightMode ? '#111' : '#fff' }}>
+                    <Surface style={{ elevation: 8, borderRadius: 12, margin: 6, padding: 8, backgroundColor: colors.surface }}>
                         <Pressable onPress={() => router.push(`/observation/${item.id}`)}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text style={{ color: nightMode ? 'red' : '#000' }}> {item.object}, {DegsFormat(item.angle)}</Text>
-                                <Text style={{ color: nightMode ? 'red' : '#000' }}> {new Date(item.created).toLocaleString()} </Text>
+                                <Text style={{ color: colors.onSurface }}> {item.object}, {DegsFormat(item.angle)}</Text>
+                                <Text style={{ color: colors.onSurface }}> {new Date(item.created).toLocaleString()} </Text>
                                 <IconButton
                                     mode="contained"
                                     onPress={async () => {
@@ -124,7 +109,7 @@ export default function Group() {
                                     }}
                                     icon="delete"
                                     style={{ borderRadius: 20 }}
-                                    iconColor={nightMode ? 'red' : '#000'}
+                                    iconColor={colors.onSurface}
                                 />
                             </View>
                         </Pressable>
@@ -135,15 +120,15 @@ export default function Group() {
             <FAB
                 icon="map"
                 size="small"
-                style={{ position: 'absolute', margin: 16, right: 10, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                color={nightMode ? 'red' : '#000'}
+                style={{ position: 'absolute', margin: 16, right: 10, bottom: 0, backgroundColor: colors.surface }}
+                color={colors.onSurface}
                 onPress={() => { router.push(`/chart/${groupId}`) }}
             />
             <FAB
                 icon="plus"
                 size="small"
-                style={{ position: 'absolute', margin: 16, right: 60, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                color={nightMode ? 'red' : '#000'}
+                style={{ position: 'absolute', margin: 16, right: 60, bottom: 0, backgroundColor: colors.surface }}
+                color={colors.onSurface}
                 onPress={async () => {
                     const observationId = await addObservation(location)
                     router.push(`/observation/${observationId}`)
@@ -152,17 +137,17 @@ export default function Group() {
             <FAB
                 icon="arrow-left"
                 size="small"
-                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                color={nightMode ? 'red' : '#000'}
+                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, backgroundColor: colors.surface }}
+                color={colors.onSurface}
                 onPress={() => router.back()}
             />
             <FAB
-                icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
+                icon={dark ? 'white-balance-sunny' : 'weather-night'}
                 size="small"
-                style={{ position: 'absolute', margin: 16, left: 70, bottom: 0, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                color={nightMode ? 'red' : '#000'}
-                onPress={() => setNightMode(!nightMode)}
-                accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+                style={{ position: 'absolute', margin: 16, left: 70, bottom: 0, backgroundColor: colors.surface }}
+                color={colors.onSurface}
+                onPress={() => setNightMode(!dark)}
+                accessibilityLabel={dark ? 'Switch to Light Mode' : 'Switch to Night Mode'}
             />
         </SafeAreaView>
     );

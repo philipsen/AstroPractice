@@ -3,19 +3,20 @@ import { useObservationStore } from '@/src/state/useObservationStore';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
-import { FAB, Text } from 'react-native-paper';
+import { FAB, Text, useTheme } from 'react-native-paper';
 import { GetSextantCorrections, SetObservationData } from '../../../../src/helpers/astron/init';
 import { useNightMode } from '../../../../src/state/NightModeContext';
 
 
 export default function SextantCorrections() {
-    const { nightMode, setNightMode } = useNightMode();
+    const { setNightMode } = useNightMode();
+    const { colors, dark } = useTheme();
     const router = useRouter();
     const observation = useObservationStore((s) => s.observation);
     if (!observation) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: nightMode ? '#181818' : '#fff' }}>
-                <Text style={{ color: nightMode ? 'red' : '#000' }}>Loading</Text>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+                <Text style={{ color: colors.onSurface }}>Loading</Text>
             </View>
         );
     }
@@ -27,7 +28,7 @@ export default function SextantCorrections() {
         corrections: corrections,
     };
     return (
-        <View style={{ flex: 1, backgroundColor: nightMode ? '#181818' : '#fff' }}>
+        <View style={{ flex: 1, backgroundColor: colors.background }}>
             <SextantCorrectionsSummary
                 data={data}
             />
@@ -35,20 +36,20 @@ export default function SextantCorrections() {
             <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
                 <FAB
                     icon="arrow-left"
-                    style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                    color={nightMode ? 'red' : '#000'}
+                    style={{ margin: 16, backgroundColor: colors.surface }}
+                    color={colors.onSurface}
                     onPress={() => {
                         router.back();
                     }}
                     size="small"
                 />
                 <FAB
-                    icon={nightMode ? 'white-balance-sunny' : 'weather-night'}
-                    style={{ margin: 16, backgroundColor: nightMode ? '#181818' : '#fff' }}
-                    onPress={() => setNightMode(!nightMode)}
-                    color={nightMode ? 'red' : '#000'}
+                    icon={dark ? 'white-balance-sunny' : 'weather-night'}
+                    style={{ margin: 16, backgroundColor: colors.surface }}
+                    onPress={() => setNightMode(!dark)}
+                    color={colors.onSurface}
                     size="small"
-                    accessibilityLabel={nightMode ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+                    accessibilityLabel={dark ? 'Switch to Light Mode' : 'Switch to Night Mode'}
                 />
             </View>
         </View>

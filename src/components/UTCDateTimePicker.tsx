@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import {
   Card,
   Divider,
@@ -8,12 +8,11 @@ import {
   Modal,
   Portal,
   Text,
-  TextInput
+  TextInput,
+  useTheme
 } from 'react-native-paper';
-import { useNightMode } from '../state/NightModeContext';
-
 export default function UTCDateTimePicker({ value, onChange }) {
-  const { nightMode, setNightMode } = useNightMode();
+  const { colors } = useTheme();
   const [visible, setVisible] = useState(false);
   const [showNativePicker, setShowNativePicker] = useState(false);
 
@@ -60,7 +59,7 @@ export default function UTCDateTimePicker({ value, onChange }) {
     <View style={{ flex: 1 }}>
       {/* PRESSABLE STRING */}
       <Pressable onPress={open}>
-        <Text style={{ textDecorationLine: "underline", color: nightMode ? '#ff2222' : '#000' }}>
+        <Text style={{ textDecorationLine: "underline", color: colors.primary }}>
           {formatted}
         </Text>
       </Pressable>
@@ -72,7 +71,7 @@ export default function UTCDateTimePicker({ value, onChange }) {
             <Text variant="titleMedium">Select Date</Text>
 
             <Pressable onPress={() => setShowNativePicker(true)}>
-              <Text style={{ marginTop: 10, textDecorationLine: "underline", color: nightMode ? '#ff2222' : '#000' }}>
+              <Text style={{ marginTop: 10, textDecorationLine: "underline", color: colors.primary }}>
                 {date.toISOString().substring(0, 10)}
               </Text>
             </Pressable>
@@ -105,14 +104,6 @@ export default function UTCDateTimePicker({ value, onChange }) {
                 style={{ width: 50, height: 40, marginHorizontal: 10 }}
                 keyboardType="numeric"
                 dense={true}
-                theme={{
-                  colors: {
-                    onSurface: '#ff2222',
-                    primary: '#ff2222',
-                    background: '#181818',
-                    placeholder: '#ff2222'
-                  }
-                }}
               ></TextInput>
               <IconButton icon="plus" onPress={() => setHours((h) => (h + 1) % 24)} />
             </View>
@@ -133,14 +124,6 @@ export default function UTCDateTimePicker({ value, onChange }) {
                 style={{ width: 50, height: 40, marginHorizontal: 10 }}
                 keyboardType="numeric"
                 dense={true}
-                theme={{
-                  colors: {
-                    onSurface: '#ff2222',
-                    primary: '#ff2222',
-                    background: '#181818',
-                    placeholder: '#ff2222'
-                  }
-                }}
               ></TextInput>
               <IconButton icon="plus" onPress={() => setMinutes((m) => (m + 1) % 60)} />
             </View>
@@ -160,14 +143,6 @@ export default function UTCDateTimePicker({ value, onChange }) {
                 }}
                 style={{ width: 50, height: 40, marginHorizontal: 10 }}
                 keyboardType="numeric"
-                theme={{
-                  colors: {
-                    onSurface: '#ff2222',
-                    primary: '#ff2222',
-                    background: '#181818',
-                    placeholder: '#ff2222'
-                  }
-                }}
               ></TextInput> 
               {/* <Text>{pad(seconds)}</Text> */}
               <IconButton icon="plus" onPress={() => setSeconds((s) => (s + 1) % 60)} />
@@ -189,14 +164,3 @@ export default function UTCDateTimePicker({ value, onChange }) {
   );
 
 }
-
-const styles = StyleSheet.create({
-  fabBottomRight: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,
-    backgroundColor: '#181818',
-    elevation: 4,
-    zIndex: 100,
-  },
-});
