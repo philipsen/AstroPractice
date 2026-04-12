@@ -9,8 +9,7 @@ import Svg, {
     Rect,
     Text as SvgText
 } from 'react-native-svg';
-import { SetPosition } from '../helpers/astron/Astron';
-import { Calc, GetGha, GetReductionCorrections, SetObservationData } from '../helpers/astron/init';
+import { Calc, GetGha, GetReductionCorrections, SetObservationData, SetPosition } from '../helpers/astron/init';
 import { CalcAssumedPosition } from '../helpers/CalcAssumedPosition';
 import { ObservationEntity } from '../models/ObservationEntity';
 

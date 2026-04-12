@@ -1,30 +1,24 @@
 import { SextantCorrectionsComputed } from "../../components/SextantCorrectionsSummary";
 import { ReductionCorrections } from "../../models/ReductionCorrections";
-import {
-  Calc as AstronCalc,
-  AstronSetBody,
-  SetPosition as AstronSetpos,
-  BODY_DATA,
-  COL,
-  Degs_f as Degs_f_Astron,
-  GetLongitude,
-  InitialiseBODY_DATA,
-  OBSERVED_ALT,
-  PopulateBODY_DATA_WithBodyNames,
-  PopulateBODY_DATA_WithStarData,
-  PopulateBODY_NAMES,
-  RefrCorr,
-  SEL_BODY_OBJ,
-  SEL_BODY_ROW,
-  SetDatetime,
-  SetObsAltitude,
-  SetProgrammaticIndexCorrectionMinutes,
-  SetSelBodyAltLimb,
-  SetSextantAngle,
-} from "./Astron";
+import { LegacyAstronEngine } from "./engine/legacyEngine";
+import type { AstronEngine, ObservationInput } from "./engine/types";
+import { effectiveObservationDateUtc } from "./effectiveObservationDateUtc";
+import { BODY_NAMES, Degs_f, SEL_BODY_OBJ } from "./legacyBridge";
+
 const DEBUG_ASTRON = false;
 const DEBUG_ASTRON_INIT = false;
-export const DegsFormat = Degs_f_Astron;
+
+let engine: AstronEngine = new LegacyAstronEngine();
+
+/** Test hook: swap engine (e.g. future native implementation). */
+export function __setAstronEngineForTests(next: AstronEngine): void {
+  engine = next;
+}
+
+export { BODY_NAMES, Degs_f, effectiveObservationDateUtc };
+export type { AstronEngine, ObservationInput } from "./engine/types";
+
+export const DegsFormat = Degs_f;
 
 export function HoeCorr(h: number): number {
   // Height of eye correction in minutes of arc
@@ -34,156 +28,60 @@ export function HoeCorr(h: number): number {
 
 export function SetBody(name: string) {
   if (DEBUG_ASTRON_INIT) console.log("SetBody called with name =", name);
-  AstronSetBody(name);
+  engine.setBody(name);
 }
 
 export function Calc() {
-  // console.log("Calc called");
-  AstronCalc();
-  // console.log("Calc completed", " lha =", BODY_DATA[SEL_BODY_ROW][COL.LHA]);
+  engine.calc();
   if (DEBUG_ASTRON_INIT)
     console.log("After Calc, SEL_BODY_OBJ =", SEL_BODY_OBJ);
-  if (DEBUG_ASTRON) console.log(" body:", BODY_DATA[0]);
+  if (DEBUG_ASTRON) console.log(" body:", engine.getObjectData()[0]);
 }
 
 // TODO: get rid of sign change
 export function SetPosition(lat: number, long: number) {
   if (DEBUG_ASTRON)
     console.log(`SetPosition called with lat = ${lat}, long = ${long}`);
-  AstronSetpos(lat, long);
+  engine.setPosition(lat, long);
 }
 
-/**
- * UTC instant passed to Astron: stored watch/recorded time `created` plus `delay` seconds
- * (chronometer or recording correction). `delay` is in seconds; invalid values are treated as 0.
- */
-export function effectiveObservationDateUtc(obs: {
-  created: Date | string | number;
-  delay?: number | null;
-}): Date {
-  const ms =
-    obs.created instanceof Date
-      ? obs.created.getTime()
-      : new Date(obs.created).getTime();
-  const sec = Number(obs.delay);
-  const d = Number.isFinite(sec) ? sec : 0;
-  return new Date(ms + d * 1000);
-}
-
-export function SetObservationData(obs) {
+export function SetObservationData(obs: ObservationInput) {
   if (DEBUG_ASTRON) console.log("SetObservationData called with obs =", obs);
-  SetDatetime(effectiveObservationDateUtc(obs));
-  SetBody(obs.object);
-  const ie = Number(obs.indexError);
-  SetProgrammaticIndexCorrectionMinutes(Number.isFinite(ie) ? ie : 0);
-  SetSextantAngle(obs.angle);
-  SetPosition(obs.latitude, obs.longitude);
-  SetObsAltitude(obs.observerAltitude);
-  const limbIdx =
-    obs.limbType !== undefined && obs.limbType !== null
-      ? obs.limbType
-      : obs.limb;
-  SetSelBodyAltLimb(limbIdx ?? 2);
-  Calc();
+  engine.setObservationData(obs);
 }
 
 export function GetSextantCorrections(): SextantCorrectionsComputed {
-  return {
-    refraction: RefrCorr(SEL_BODY_OBJ.BodyH2),
-    sd: SEL_BODY_OBJ.BodySDCorr,
-    parallax: SEL_BODY_OBJ.BodyParallaxCorr,
-  };
+  return engine.getSextantCorrections();
 }
 
 export function GetReductionCorrections(): ReductionCorrections {
-  // console.log("GetReductionCorrections called", BODY_DATA[SEL_BODY_ROW]);
-  // console.log(" lha =", BODY_DATA[SEL_BODY_ROW][COL.LHA], " azm =", BODY_DATA[SEL_BODY_ROW][COL.Azm]);
-  return {
-    gha: BODY_DATA[SEL_BODY_ROW][COL.GHA],
-    chosenLongitude: GetLongitude(),
-    declination: BODY_DATA[SEL_BODY_ROW][COL.Dec],
-    lha: BODY_DATA[SEL_BODY_ROW][COL.LHA],
-    hc: BODY_DATA[SEL_BODY_ROW][COL.Hc],
-    azimuth: BODY_DATA[SEL_BODY_ROW][COL.Azm],
-    hs: OBSERVED_ALT,
-  } as ReductionCorrections;
+  return engine.getReductionCorrections();
 }
 
 export function GetHs(): number {
-  return OBSERVED_ALT;
+  return engine.getHs();
 }
 
 export function GetObjectData() {
-  const objectData = [];
+  const objectData = engine.getObjectData();
 
-  console.log("GetObjectData called", BODY_DATA.length);
-  // Iterate through all bodies in BODY_DATA
-  for (let i = 0; i < BODY_DATA.length; i++) {
-    const bodyRow = BODY_DATA[i];
-    // console.log(" bodyRow =", bodyRow, " Name =", bodyRow[COL.Body]);
-    if (bodyRow && bodyRow[COL.Body]) {
-      // Only include bodies with names
-      objectData.push({
-        name: bodyRow[COL.Body],
-        hc: bodyRow[COL.Hc],
-        azimuth: bodyRow[COL.Azm],
-        gha: bodyRow[COL.GHA],
-        declination: bodyRow[COL.Dec],
-        lha: bodyRow[COL.LHA],
-      });
-    }
-  }
-  // console.log("GetObjectData returning", objectData);
+  console.log("GetObjectData called", objectData.length);
   return objectData;
 }
 
 export function GetBestFitObjects(count: number = 5) {
-  const hs = GetHs(); // Get observed altitude
-  const objectData = [];
-  //CalcAllBodiesHcZn();
-  // console.log("GetBestFitObjects called, Hs =", hs, "count =", count);
-
-  // Iterate through all bodies in BODY_DATA
-  for (let i = 0; i < BODY_DATA.length; i++) {
-    const bodyRow = BODY_DATA[i];
-    if (bodyRow && bodyRow[COL.Body] && bodyRow[COL.Hc] != null) {
-      const hc = bodyRow[COL.Hc];
-      const diff = Math.abs(hc - hs);
-
-      objectData.push({
-        name: bodyRow[COL.Body],
-        hc: hc,
-        hs: hs,
-        difference: diff,
-        azimuth: bodyRow[COL.Azm],
-        gha: bodyRow[COL.GHA],
-        declination: bodyRow[COL.Dec],
-        lha: bodyRow[COL.LHA],
-      });
-    }
-  }
-
-  // Sort by smallest absolute difference and take the requested count
-  const sortedObjects = objectData
-    .sort((a, b) => a.difference - b.difference)
-    .slice(0, count);
-
-  // console.log("GetBestFitObjects returning", sortedObjects.length, "objects");
-  return sortedObjects;
+  return engine.getBestFitObjects(count);
 }
 
 export function GetGha(): number {
-  return BODY_DATA[SEL_BODY_ROW][COL.GHA];
+  return engine.getGha();
 }
 
 export function GetLha(): number {
-  return BODY_DATA[SEL_BODY_ROW][COL.LHA];
+  return engine.getLha();
 }
 
 export default function InitAstron() {
   console.log("Initializing Astron data...");
-  InitialiseBODY_DATA();
-  PopulateBODY_NAMES();
-  PopulateBODY_DATA_WithBodyNames();
-  PopulateBODY_DATA_WithStarData();
+  engine.init();
 }
