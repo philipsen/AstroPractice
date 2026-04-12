@@ -1,6 +1,6 @@
 import {
   SetObsAltitude,
-  SetProgrammaticIndexCorrectionMinutes,
+  SetIndexCorrectionMinutes,
   SetSelBodyAltLimb,
   SetSextantAngle,
 } from "../legacyBridge";
@@ -11,7 +11,7 @@ export function applySextantAndCorrections(
   observerAltitudeM: number,
   limbIndex: number
 ): void {
-  SetProgrammaticIndexCorrectionMinutes(indexErrorMinutes);
+  SetIndexCorrectionMinutes(indexErrorMinutes);
   SetSextantAngle(angle);
   SetObsAltitude(observerAltitudeM);
   SetSelBodyAltLimb(limbIndex);

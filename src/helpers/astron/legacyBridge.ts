@@ -3,25 +3,31 @@
  * Replace this bridge when a native engine reaches golden-test parity.
  */
 export {
-  AstronSetBody,
+  // Setters — align with observation pipeline: time → body → sextant → position → altitude → limb
+  SetDatetime,
+  SetBody,
+  SetIndexCorrectionMinutes,
+  SetSextantAngle,
+  SetPosition,
+  SetObsAltitude,
+  SetSelBodyAltLimb,
+
+  // Full recompute
+  Calc,
+
+  // Tables & readouts
   BODY_DATA,
   BODY_NAMES,
-  Calc,
   COL,
-  Degs_f,
   GetLongitude,
-  InitialiseBODY_DATA,
   OBSERVED_ALT,
-  PopulateBODY_DATA_WithBodyNames,
-  PopulateBODY_DATA_WithStarData,
-  PopulateBODY_NAMES,
   RefrCorr,
   SEL_BODY_OBJ,
   SEL_BODY_ROW,
-  SetDatetime,
-  SetObsAltitude,
-  SetProgrammaticIndexCorrectionMinutes,
-  SetPosition,
-  SetSelBodyAltLimb,
-  SetSextantAngle,
+
+  // Catalog / BODY_DATA bootstrap
+  InitialiseBODY_DATA,
+  PopulateBODY_NAMES,
+  PopulateBODY_DATA_WithBodyNames,
+  PopulateBODY_DATA_WithStarData,
 } from "./Astron";

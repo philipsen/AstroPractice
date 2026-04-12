@@ -2,8 +2,9 @@ import { SextantCorrectionsComputed } from "../../components/SextantCorrectionsS
 import { ReductionCorrections } from "../../models/ReductionCorrections";
 import { LegacyAstronEngine } from "./engine/legacyEngine";
 import type { AstronEngine, ObservationInput } from "./engine/types";
+import { formatAngleDegreesMinutes } from "../formatAngleDegreesMinutes";
 import { effectiveObservationDateUtc } from "./effectiveObservationDateUtc";
-import { BODY_NAMES, Degs_f, SEL_BODY_OBJ } from "./legacyBridge";
+import { BODY_NAMES, SEL_BODY_OBJ } from "./legacyBridge";
 
 const DEBUG_ASTRON = false;
 const DEBUG_ASTRON_INIT = false;
@@ -15,10 +16,11 @@ export function __setAstronEngineForTests(next: AstronEngine): void {
   engine = next;
 }
 
-export { BODY_NAMES, Degs_f, effectiveObservationDateUtc };
+export { BODY_NAMES, effectiveObservationDateUtc, formatAngleDegreesMinutes };
 export type { AstronEngine, ObservationInput } from "./engine/types";
 
-export const DegsFormat = Degs_f;
+/** @deprecated Use {@link formatAngleDegreesMinutes} */
+export const DegsFormat = formatAngleDegreesMinutes;
 
 export function HoeCorr(h: number): number {
   // Height of eye correction in minutes of arc

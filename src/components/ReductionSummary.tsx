@@ -1,7 +1,8 @@
 
 import { View } from "react-native";
 import { Divider, Switch, Text, useTheme } from "react-native-paper";
-import { Degs_f, effectiveObservationDateUtc } from "../helpers/astron/init";
+import { effectiveObservationDateUtc } from "../helpers/astron/init";
+import { formatAngleDegreesMinutes } from "../helpers/formatAngleDegreesMinutes";
 import { SightReductionData } from "../models/SightReductionData";
 import { KVRow } from "./KVRow";
 
@@ -20,34 +21,34 @@ export default function ReductionSummary({ data }: { data: SightReductionData })
             />
             <KVRow
                 label={`GHA of ${data.observation.object}`}
-                value={Degs_f(data.reduction.gha)}
+                value={formatAngleDegreesMinutes(data.reduction.gha)}
                 labelWidth={150}
             />
             <KVRow
                 label="Chosen Longitude"
-                value={Degs_f(data.reduction.chosenLongitude)}
+                value={formatAngleDegreesMinutes(data.reduction.chosenLongitude)}
                 labelWidth={150}
             />
             <KVRow
                 label={`Declination of ${data.observation.object}`}
-                value={Degs_f(data.reduction.declination)}
+                value={formatAngleDegreesMinutes(data.reduction.declination)}
                 labelWidth={150}
             />
             <KVRow
                 label="LHA"
-                value={Degs_f(data.reduction.lha)}
+                value={formatAngleDegreesMinutes(data.reduction.lha)}
                 labelWidth={150}
             />
 
             <Divider bold={true} />
             <KVRow
                 label="Computed Hc"
-                value={Degs_f(data.reduction.hc)}
+                value={formatAngleDegreesMinutes(data.reduction.hc)}
                 labelWidth={150}
             />
             <KVRow
                 label="Observed Altitude (Hs)"
-                value={Degs_f(data.reduction.hs)}
+                value={formatAngleDegreesMinutes(data.reduction.hs)}
                 labelWidth={150}
             />
             <Divider bold={true} />

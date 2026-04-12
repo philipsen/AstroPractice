@@ -177,12 +177,12 @@ const ObservationPlot: React.FC<ObservationPlotProps> = ({
             // console.log(`.  rdAssumed: Z=${rdAssumed.azimuth.toFixed(1)} Int=${int.toFixed(2)}`);
 
             const apMoved = move(assumedLat, assumedLong, rdAssumed.azimuth, -int);
-            // console.log(`.  moved AP to: lat=${Degs_f(apMoved[0])}, lon=${Degs_f(apMoved[1])}`);
+            // console.log(`.  moved AP to: lat=${formatAngleDegreesMinutes(apMoved[0])}, lon=${formatAngleDegreesMinutes(apMoved[1])}`);
 
             const arrowend1 = move(apMoved[0], apMoved[1], rdAssumed.azimuth + 90, 1);
-            // console.log(`.  arrow end1: lat=${Degs_f(arrowend1[0])}, lon=${Degs_f(arrowend1[1])}`);
+            // console.log(`.  arrow end1: lat=${formatAngleDegreesMinutes(arrowend1[0])}, lon=${formatAngleDegreesMinutes(arrowend1[1])}`);
             const arrowend2 = move(apMoved[0], apMoved[1], rdAssumed.azimuth - 90, 1);
-            // console.log(`.  arrow end2: lat=${Degs_f(arrowend2[0])}, lon=${Degs_f(arrowend2[1])}`);
+            // console.log(`.  arrow end2: lat=${formatAngleDegreesMinutes(arrowend2[0])}, lon=${formatAngleDegreesMinutes(arrowend2[1])}`);
 
             const dLat = obs.latitude - latestObservation.latitude;
             const dLon = obs.longitude - latestObservation.longitude;

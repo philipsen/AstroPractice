@@ -1,5 +1,5 @@
-import { AstronSetBody } from "../legacyBridge";
+import { SetBody } from "../legacyBridge";
 
 export function selectBody(name: string): void {
-  AstronSetBody(name);
+  SetBody(name);
 }

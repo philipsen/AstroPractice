@@ -1,9 +1,6 @@
 import type { AstronEngine, ObservationInput } from "./types";
-import {
-  BODY_NAMES,
-  Degs_f,
-  SetPosition,
-} from "../legacyBridge";
+import { formatAngleDegreesMinutes } from "../../formatAngleDegreesMinutes";
+import { BODY_NAMES, SetPosition } from "../legacyBridge";
 import { effectiveObservationDateUtc } from "../effectiveObservationDateUtc";
 import * as legacyAlt from "../subsystems/legacyAltitudeInputs";
 import * as legacyBody from "../subsystems/legacyBody";
@@ -86,6 +83,14 @@ export class LegacyAstronEngine implements AstronEngine {
     minutePartDecimalDigits = 1,
     almanac = false
   ): string {
-    return Degs_f(dd, name, degreePartDigits, minutePartDecimalDigits, almanac);
+    const prefix: "" | "N" | "E" =
+      name === "N" || name === "E" ? name : "";
+    return formatAngleDegreesMinutes(
+      dd,
+      prefix,
+      degreePartDigits,
+      minutePartDecimalDigits,
+      almanac
+    );
   }
 }
