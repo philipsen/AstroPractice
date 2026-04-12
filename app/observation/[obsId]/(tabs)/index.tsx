@@ -7,18 +7,17 @@ import { FAB, Text, TextInput, useTheme } from "react-native-paper";
 
 import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
 
+import CelestialBodyPicker from '@/src/components/CelestialBodyPicker';
 import CustomDropdownInput from '@/src/components/CustomDropdownInput';
-import OutlinedObservationTextInput from '@/src/components/OutlinedObservationTextInput';
 import NSChoice from "@/src/components/NSChoice";
+import OutlinedObservationTextInput from '@/src/components/OutlinedObservationTextInput';
 import UTCDateTimePicker from "@/src/components/UTCDateTimePicker";
 import { useObservationStore } from "@/src/state/useObservationStore";
 import { Dropdown } from 'react-native-paper-dropdown';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { GetBestFitObjects } from "../../../../src/helpers/astron/init";
 import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
+import InitAstron, { GetBestFitObjects } from "../../../../src/helpers/astron/init";
 import { useNightMode } from '../../../../src/state/NightModeContext';
-const bodyNames = BODY_NAMES.map(name => name.toLowerCase());
-
 export default function ObservationEdit() {
     const { setNightMode } = useNightMode();
     const { colors, dark } = useTheme();
@@ -80,6 +79,19 @@ export default function ObservationEdit() {
     const [nors, setNors] = useState<'N' | 'S' | 'E' | 'W'>('N') ;
     const [eorw, setEorw] = useState<'N' | 'S' | 'E' | 'W'>('E') ;
 
+    /** Bumps after InitAstron fills BODY_NAMES in place (mutation does not re-render by itself). */
+    const [, setBodyListRevision] = useState(0);
+
+    /** BODY_NAMES is filled at runtime by InitAstron — never snapshot it at module load. */
+    const bodyNameOptions = BODY_NAMES.map((name) => String(name).toLowerCase());
+
+    useEffect(() => {
+        if (BODY_NAMES.length === 0) {
+            InitAstron();
+            setBodyListRevision((r) => r + 1);
+        }
+    }, []);
+
     useEffect(() => {
         console.log("observation changed, updating fields", observation);
         if (observation) {
@@ -87,7 +99,11 @@ export default function ObservationEdit() {
             setAngleDegrees(Math.floor(observation.angle).toString());
             setAngleMinutes((Math.round(60 * (observation.angle - Math.floor(observation.angle)) * 10) / 10).toString());
             setObserverAltitude(observation.observerAltitude?.toString());
-            setBody(bodyNames.indexOf(observation.object?.toLowerCase()))
+            setBody(
+                BODY_NAMES.map((n) => String(n).toLowerCase()).indexOf(
+                    observation.object?.toLowerCase() ?? ''
+                )
+            )
             setIndexError(observation.indexError?.toString());
             setLimb(limbTypeOptions[observation.limbType ? observation.limbType : 0].value);
             setArtificialHorizon(observation.horizon ? observation.horizon === 1 : false);
@@ -234,20 +250,20 @@ export default function ObservationEdit() {
                             CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
-                    <View style={{ margin: 2, flex: .7 }}>
-                        <Dropdown
-                            mode="outlined"
+                    <View style={{ margin: 2, flex: 0.7 }}>
+                        <CelestialBodyPicker
                             label="body"
                             placeholder="Select body"
-                            options={bodyNames.map((name, index) => ({ label: name, value: name }))}
-                            value={bodyNames[body]}
-                            onSelect={(value) => {
-                                if (value) {
-                                    updateField('object', value);
-                                    setBody(bodyNames.indexOf(value));
-                                }
+                            selectedName={
+                                body >= 0 && body < bodyNameOptions.length
+                                    ? bodyNameOptions[body]
+                                    : ''
+                            }
+                            options={bodyNameOptions}
+                            onSelect={(name) => {
+                                updateField('object', name);
+                                setBody(bodyNameOptions.indexOf(name));
                             }}
-                            CustomDropdownInput={props => <CustomDropdownInput {...props} />}
                         />
                     </View>
                     <View style={{ margin: 2, flex: .7 }}>
