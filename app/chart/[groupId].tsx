@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { FAB, Surface, Switch, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Degs_f } from "@/src/helpers/astron/init";
+import { formatAngleDegreesMinutes } from "@/src/helpers/formatAngleDegreesMinutes";
 
 export default function Chart() {
   const groupId = Number(useLocalSearchParams().groupId);
@@ -70,7 +70,7 @@ export default function Chart() {
                         <Text>{new Date(observation.created).toLocaleTimeString('en-US', { hour12: false, timeZone: 'UTC' })}</Text>
                         <Text variant="bodyMedium" style={{ marginLeft: 8 }}>{observation.object}</Text>
                       </View>
-                      <Text variant="bodyMedium">Hs: {Degs_f(observation.angle)}</Text>
+                      <Text variant="bodyMedium">Hs: {formatAngleDegreesMinutes(observation.angle)}</Text>
                     </View>
                     <Switch
                       value={selectedObservations[index] || false}

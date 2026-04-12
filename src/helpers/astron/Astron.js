@@ -1551,7 +1551,7 @@ let SEXTANT_MIN = 0;
 /** Index correction in arcminutes; RN/Expo app sets this (browser uses DOM uiIC). */
 let PROGRAMMATIC_IC_MINUTES = 0;
 
-export function SetProgrammaticIndexCorrectionMinutes(minutes) {
+export function SetIndexCorrectionMinutes(minutes) {
     const n = Number(minutes);
     PROGRAMMATIC_IC_MINUTES = Number.isFinite(n) ? n : 0;
 }
@@ -100175,7 +100175,7 @@ function AddListeners() {
 // Calc() is called upon (most) input changes, after relevant onchange() has verified input.
 // ///////////////////////////////////////////////////////
 
-export function AstronSetBody(name) {
+export function SetBody(name) {
     if (name === null)
         name = BODY_NAMES[0]; // Default to Sun
     

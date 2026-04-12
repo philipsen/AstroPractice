@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
 import { FAB, IconButton, Surface, Text, TextInput, useTheme } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DegsFormat } from '../../src/helpers/astron/init';
+import { formatAngleDegreesMinutes } from "@/src/helpers/formatAngleDegreesMinutes";
 import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../src/helpers/ObservationRepository';
 import { useNightMode } from '../../src/state/NightModeContext';
 
@@ -98,7 +98,7 @@ export default function Group() {
                     <Surface style={{ elevation: 8, borderRadius: 12, margin: 6, padding: 8, backgroundColor: colors.surface }}>
                         <Pressable onPress={() => router.push(`/observation/${item.id}`)}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text style={{ color: colors.onSurface }}> {item.object}, {DegsFormat(item.angle)}</Text>
+                                <Text style={{ color: colors.onSurface }}> {item.object}, {formatAngleDegreesMinutes(item.angle)}</Text>
                                 <Text style={{ color: colors.onSurface }}> {new Date(item.created).toLocaleString()} </Text>
                                 <IconButton
                                     mode="contained"
