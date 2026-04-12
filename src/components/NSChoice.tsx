@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 type Props = {
     value: 'N' | 'S' | 'E' | 'W';
     onChange: (value: 'N' | 'S' | 'E' | 'W') => void;
-    nightMode?: boolean;
 }
 
-export default function NSChoice({ value, onChange, nightMode }: Props) {
+export default function NSChoice({ value, onChange }: Props) {
+    const { colors } = useTheme();
     function toggle(v: string) {
         switch (v) {
             case 'N':
@@ -23,12 +23,12 @@ export default function NSChoice({ value, onChange, nightMode }: Props) {
     }
     const [val, setVal] = useState(value);
     return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 8, margin: 2, padding: 8, borderWidth: 1, borderRadius: 5, borderColor: nightMode ? 'red' : '#000' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 8, margin: 2, padding: 8, borderWidth: 1, borderRadius: 5, borderColor: colors.outline }}>
             <Pressable onPress={() => {
                 setVal(toggle(val));
                 onChange(toggle(val));
             }}>
-                <Text style={{ color: nightMode ? 'red' : '#000' }}>{val}</Text>
+                <Text style={{ color: colors.onSurface }}>{val}</Text>
             </Pressable>
         </View>
     );

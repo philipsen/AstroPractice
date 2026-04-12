@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { useTheme } from "react-native-paper";
 
 const rowStyle = {
   flexDirection: 'row' as const,
@@ -14,19 +15,17 @@ function KVRow({
   value,
   labelWidth,
   bold,
-  nightMode,
 }: {
   label: string;
   value: string;
   labelWidth: number;
   bold?: boolean;
-  nightMode?: boolean;
 }) {
-  const textColor = nightMode ? '#ff3333' : undefined;
+  const { colors } = useTheme();
   return (
     <View style={rowStyle}>
-      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}> {label} </Text>
-      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}> {value} </Text>
+      <Text style={{ color: colors.onSurface, fontWeight: bold ? 'bold' : undefined }}> {label} </Text>
+      <Text style={{ color: colors.onSurface, fontWeight: bold ? 'bold' : undefined }}> {value} </Text>
     </View>
   );
 }
@@ -35,19 +34,17 @@ function KVRow3({
   value,
   labelWidth,
   bold,
-  nightMode,
 }: {
   label: string;
   value: string;
   labelWidth: number;
   bold?: boolean;
-  nightMode?: boolean;
 }) {
-  const textColor = nightMode ? '#ff3333' : undefined;
+  const { colors } = useTheme();
   return (
     <View style={rowStyle}>
-      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}>{label}</Text>
-      <Text style={textColor ? { color: textColor, fontWeight: bold ? 'bold' : undefined } : bold ? { fontWeight: 'bold' } : undefined}>{value}</Text>
+      <Text style={{ color: colors.onSurface, fontWeight: bold ? 'bold' : undefined }}>{label}</Text>
+      <Text style={{ color: colors.onSurface, fontWeight: bold ? 'bold' : undefined }}>{value}</Text>
       <Text>{" "}</Text>
     </View>
   );

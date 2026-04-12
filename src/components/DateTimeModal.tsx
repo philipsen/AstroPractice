@@ -13,6 +13,7 @@ import {
     Portal,
     Text,
     TextInput,
+    useTheme,
 } from 'react-native-paper';
 
 type DateTimeModalProps = {
@@ -35,6 +36,7 @@ export const DateTimeModal: React.FC<DateTimeModalProps> = ({
   title = 'Select date & time',
 }) => {
   console.log("DateTimeModal render", visible, initialDate);
+  const { colors } = useTheme();
 
   // Keep a working copy so user can cancel without affecting parent.
   const [localDate, setLocalDate] = React.useState<Date>(initialDate);
@@ -119,7 +121,7 @@ export const DateTimeModal: React.FC<DateTimeModalProps> = ({
           margin: 16,
           padding: 16,
           borderRadius: 12,
-          backgroundColor: 'white',
+          backgroundColor: colors.surface,
         }}
       >
         <Text variant="titleMedium" style={{ marginBottom: 12 }}>
@@ -220,6 +222,7 @@ const StepField: React.FC<{
   onMinus: () => void;
   onPlus: () => void;
 }> = ({ label, value, onChangeText, onMinus, onPlus, maxLength = 2 }) => {
+  const { colors } = useTheme();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
       <IconButton
@@ -238,14 +241,8 @@ const StepField: React.FC<{
         style={{ width: 64 }}
         contentStyle={{ textAlign: 'center' }}
         label={label}
-        theme={{
-          colors: {
-            onSurface: '#ff2222',
-            primary: '#ff2222',
-            background: '#181818',
-            placeholder: '#ff2222'
-          }
-        }}
+        outlineColor={colors.outline}
+        activeOutlineColor={colors.primary}
       />
       <IconButton
         icon="plus"

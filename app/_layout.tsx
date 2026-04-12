@@ -2,30 +2,10 @@
 
 import { Stack, useNavigationContainerRef } from "expo-router";
 import React, { useEffect, useState } from 'react';
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { lightAppTheme, nightVisionTheme } from '../src/theme/appThemes';
 import { NightModeContext } from '../src/state/NightModeContext';
-
-const nightTheme = {
-  ...MD3DarkTheme,
-  colors: {
-    ...MD3DarkTheme.colors,
-    background: '#000',
-    surface: '#111',
-    text: 'red',
-    primary: 'red',
-    accent: 'red',
-  },
-};
-
-const lightTheme = {
-  ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-    background: '#fff',
-    text: '#000',
-  },
-};
 
 export default function RootLayout() {
   const [nightMode, setNightMode] = useState(false);
@@ -43,7 +23,7 @@ export default function RootLayout() {
 
   return (
     <NightModeContext.Provider value={{ nightMode, setNightMode }}>
-      <PaperProvider theme={nightMode ? nightTheme : lightTheme}>
+      <PaperProvider theme={nightMode ? nightVisionTheme : lightAppTheme}>
         <SafeAreaProvider>
           <Stack screenOptions={{ headerShown: false }} navigationContainerRef={navigationRef} />
         </SafeAreaProvider>
