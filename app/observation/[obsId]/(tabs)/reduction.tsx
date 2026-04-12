@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { FAB, Text, useTheme } from "react-native-paper";
-import { Calc, GetGha, GetReductionCorrections, SetPosition } from "../../../../src/helpers/astron/init";
+import { Calc, GetGha, GetReductionCorrections, SetObservationData, SetPosition } from "../../../../src/helpers/astron/init";
 import { CalcAssumedPosition } from "../../../../src/helpers/CalcAssumedPosition";
 import { useNightMode } from '../../../../src/state/NightModeContext';
 
@@ -17,6 +17,8 @@ export default function SightReduction() {
 
     if (observation) {
         console.log("Calc reductions");
+        // Keep global Astron state in sync with the store (body, time, Hs, etc.) — same as sextant tab.
+        SetObservationData(observation);
 
         const ghaReal = GetGha();
         const [assumedLat, assumedLong] = CalcAssumedPosition(ghaReal, observation.latitude, observation.longitude);
