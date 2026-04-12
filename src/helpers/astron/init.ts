@@ -18,6 +18,7 @@ import {
   SEL_BODY_ROW,
   SetDatetime,
   SetObsAltitude,
+  SetProgrammaticIndexCorrectionMinutes,
   SetSelBodyAltLimb,
   SetSextantAngle,
 } from "./Astron";
@@ -73,6 +74,8 @@ export function SetObservationData(obs) {
   if (DEBUG_ASTRON) console.log("SetObservationData called with obs =", obs);
   SetDatetime(effectiveObservationDateUtc(obs));
   SetBody(obs.object);
+  const ie = Number(obs.indexError);
+  SetProgrammaticIndexCorrectionMinutes(Number.isFinite(ie) ? ie : 0);
   SetSextantAngle(obs.angle);
   SetPosition(obs.latitude, obs.longitude);
   SetObsAltitude(obs.observerAltitude);

@@ -1548,6 +1548,14 @@ function Putt(id, text) {
 let SEXTANT_DEG = 0;
 let SEXTANT_MIN = 0;
 
+/** Index correction in arcminutes; RN/Expo app sets this (browser uses DOM uiIC). */
+let PROGRAMMATIC_IC_MINUTES = 0;
+
+export function SetProgrammaticIndexCorrectionMinutes(minutes) {
+    const n = Number(minutes);
+    PROGRAMMATIC_IC_MINUTES = Number.isFinite(n) ? n : 0;
+}
+
 function PuttInputValue(id, v) {           // Put a value into <input> field.
     //document.getElementById(id).value = v;  // If v is of type number, JS automatically converts it to type text.
     if (DEBUG_ASTRON) console.log("PuttInputValue(): id: " + id + " value: " + v);
@@ -100398,7 +100406,7 @@ function GettInputValue(id) {
         case "uiShoreDist":
             return "";
         case "uiIC":
-            return 0.0;
+            return PROGRAMMATIC_IC_MINUTES;
         case "uiHoE":
             return OBS_ALTITUDE;
         case "usHeightUnits":
