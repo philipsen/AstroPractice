@@ -59,7 +59,11 @@ export function SetObservationData(obs) {
   SetSextantAngle(obs.angle);
   SetPosition(obs.latitude, obs.longitude);
   SetObsAltitude(obs.observerAltitude);
-  SetSelBodyAltLimb(obs.limb);
+  const limbIdx =
+    obs.limbType !== undefined && obs.limbType !== null
+      ? obs.limbType
+      : obs.limb;
+  SetSelBodyAltLimb(limbIdx ?? 2);
   Calc();
 }
 

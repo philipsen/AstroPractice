@@ -53,14 +53,14 @@ export default function TopTabsLayout() {
           name="index"
           initialParams={{ obsId: observationId }}
           options={{ title: 'Edit' }} />
-        {/* <MaterialTopTabs.Screen
+        <MaterialTopTabs.Screen
           name="sextant"
           initialParams={{ obsId: observationId }}
           options={{ title: 'Sextant' }} />
         <MaterialTopTabs.Screen
           name="reduction"
           initialParams={{ obsId: observationId }}
-          options={{ title: 'Reduction' }} /> */}
+          options={{ title: 'Reduction' }} />
       </MaterialTopTabs>
 
     </SafeAreaView>
