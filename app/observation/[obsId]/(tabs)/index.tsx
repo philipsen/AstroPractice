@@ -11,6 +11,7 @@ import NSChoice from "@/src/components/NSChoice";
 import OutlinedObservationTextInput from '@/src/components/OutlinedObservationTextInput';
 import UTCDateTimePicker from "@/src/components/UTCDateTimePicker";
 import { useObservationStore } from "@/src/state/useObservationStore";
+import { useAndroidNavBarFabOffset } from '@/src/hooks/useAndroidNavBarFabOffset';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
 import InitAstron, { BODY_NAMES, GetBestFitObjects } from "../../../../src/helpers/astron/init";
@@ -123,10 +124,12 @@ export default function ObservationEdit() {
         }
     }, [observation, limbTypeOptions]);
 
+    const androidNavFabOffset = useAndroidNavBarFabOffset();
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
             {/* FAB row: back and night mode side by side at bottom left */}
-            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
+            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: androidNavFabOffset, zIndex: 101 }}>
                 <FAB
                     icon="arrow-left"
                     style={{ margin: 16, backgroundColor: colors.surface }}

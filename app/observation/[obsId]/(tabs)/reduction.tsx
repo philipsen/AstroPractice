@@ -15,6 +15,7 @@ import {
     SetPosition,
 } from "../../../../src/helpers/astron/init";
 import { CalcAssumedPosition } from "../../../../src/helpers/CalcAssumedPosition";
+import { useAndroidNavBarFabOffset } from '@/src/hooks/useAndroidNavBarFabOffset';
 import { useNightMode } from '../../../../src/state/NightModeContext';
 
 function computeReductionForObservation(
@@ -44,6 +45,7 @@ export default function SightReduction() {
     const { setNightMode } = useNightMode();
     const { colors, dark } = useTheme();
     const router = useRouter();
+    const androidNavFabOffset = useAndroidNavBarFabOffset();
     const observation = useObservationStore((s) => s.observation);
     const [realPosition, setRealPosition] = useState<boolean>(true);
     const [reduction, setReduction] = useState<ReductionCorrections | null>(null);
@@ -91,7 +93,7 @@ export default function SightReduction() {
                 }}
             />
 
-            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
+            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: androidNavFabOffset, zIndex: 101 }}>
                 <FAB
                     icon="arrow-left"
                     style={{ margin: 16, backgroundColor: colors.surface }}

@@ -7,6 +7,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Pressable, View } from 'react-native';
 import { FAB, IconButton, Surface, Text, TextInput, useTheme } from 'react-native-paper';
+import { useAndroidNavBarFabOffset } from '@/src/hooks/useAndroidNavBarFabOffset';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { formatAngleDegreesMinutes } from "@/src/helpers/formatAngleDegreesMinutes";
 import { deleteObservation, getLatestObservation, newObservation, updateLocation } from '../../src/helpers/ObservationRepository';
@@ -63,6 +64,7 @@ export default function Group() {
     );
 
     const router = useRouter();
+    const androidNavFabOffset = useAndroidNavBarFabOffset();
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
@@ -120,14 +122,14 @@ export default function Group() {
             <FAB
                 icon="map"
                 size="small"
-                style={{ position: 'absolute', margin: 16, right: 10, bottom: 0, backgroundColor: colors.surface }}
+                style={{ position: 'absolute', margin: 16, right: 10, bottom: androidNavFabOffset, backgroundColor: colors.surface }}
                 color={colors.onSurface}
                 onPress={() => { router.push(`/chart/${groupId}`) }}
             />
             <FAB
                 icon="plus"
                 size="small"
-                style={{ position: 'absolute', margin: 16, right: 60, bottom: 0, backgroundColor: colors.surface }}
+                style={{ position: 'absolute', margin: 16, right: 60, bottom: androidNavFabOffset, backgroundColor: colors.surface }}
                 color={colors.onSurface}
                 onPress={async () => {
                     const observationId = await addObservation(location)
@@ -137,14 +139,14 @@ export default function Group() {
             <FAB
                 icon="arrow-left"
                 size="small"
-                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, backgroundColor: colors.surface }}
+                style={{ position: 'absolute', margin: 16, left: 10, bottom: androidNavFabOffset, backgroundColor: colors.surface }}
                 color={colors.onSurface}
                 onPress={() => router.back()}
             />
             <FAB
                 icon={dark ? 'white-balance-sunny' : 'weather-night'}
                 size="small"
-                style={{ position: 'absolute', margin: 16, left: 70, bottom: 0, backgroundColor: colors.surface }}
+                style={{ position: 'absolute', margin: 16, left: 70, bottom: androidNavFabOffset, backgroundColor: colors.surface }}
                 color={colors.onSurface}
                 onPress={() => setNightMode(!dark)}
                 accessibilityLabel={dark ? 'Switch to Light Mode' : 'Switch to Night Mode'}

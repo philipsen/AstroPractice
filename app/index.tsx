@@ -3,6 +3,7 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, FAB, Surface, Text, TextInput, useTheme } from 'react-native-paper';
+import { useAndroidNavBarFabOffset } from '@/src/hooks/useAndroidNavBarFabOffset';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InitAstron from '../src/helpers/astron/init';
 import { importAllData } from '../src/helpers/ImportExport';
@@ -20,6 +21,7 @@ export default function HomeScreen() {
     const deleteGroup = useGroupsStore((s) => s.delete);
     const [name, setName] = useState("");
     const [description, setDescription] = useState('');
+    const androidNavFabOffset = useAndroidNavBarFabOffset();
 
     useEffect(() => {
         hydrate();
@@ -87,7 +89,7 @@ export default function HomeScreen() {
             /> */}
             <FAB
                 icon={dark ? 'white-balance-sunny' : 'weather-night'}
-                style={{ position: 'absolute', margin: 16, left: 10, bottom: 0, zIndex: 1000, backgroundColor: colors.surface }}
+                style={{ position: 'absolute', margin: 16, left: 10, bottom: androidNavFabOffset, zIndex: 1000, backgroundColor: colors.surface }}
                 onPress={() => setNightMode(!dark)}
                 color={colors.onSurface}
                 accessibilityLabel={dark ? 'Switch to Light Mode' : 'Switch to Night Mode'}
@@ -95,7 +97,7 @@ export default function HomeScreen() {
             />
             <FAB
                 icon="import"
-                style={{ position: 'absolute', margin: 16, left: 80, bottom: 0, zIndex: 1000, backgroundColor: colors.surface }}
+                style={{ position: 'absolute', margin: 16, left: 80, bottom: androidNavFabOffset, zIndex: 1000, backgroundColor: colors.surface }}
                 color={colors.onSurface}
                 onPress={async () => {
                     await importAllData(() => {
@@ -107,7 +109,7 @@ export default function HomeScreen() {
             {!dark && (
                 <FAB
                     icon="delete-sweep"
-                    style={{ position: 'absolute', margin: 16, left: 170, bottom: 0, zIndex: 1000 }}
+                    style={{ position: 'absolute', margin: 16, left: 170, bottom: androidNavFabOffset, zIndex: 1000 }}
                     onPress={async () => {
                         console.log('Clear All pressed');
                         const clear = useGroupsStore.getState().deleteAll;

@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { FAB, Surface, Switch, Text } from "react-native-paper";
+import { useAndroidNavBarFabOffset } from '@/src/hooks/useAndroidNavBarFabOffset';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { formatAngleDegreesMinutes } from "@/src/helpers/formatAngleDegreesMinutes";
 
@@ -49,6 +50,8 @@ export default function Chart() {
     });
   }, []);
 
+  const androidNavFabOffset = useAndroidNavBarFabOffset();
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {isLoading ? (
@@ -60,7 +63,7 @@ export default function Chart() {
           <View style={{ flex: 1, padding: 16, marginTop: 20 }}>          
               <ObservationPlot observations={selectedObservationsList} />
           </View>
-          <View style={{ position: 'absolute', bottom: 16, right: 60, left: 60, maxHeight: 300 }}>
+          <View style={{ position: 'absolute', bottom: 16 + androidNavFabOffset, right: 60, left: 60, maxHeight: 300 }}>
             <ScrollView style={{ borderRadius: 8, padding: 8 }}>
               {observations.map((observation, index) => (
                 <Surface key={observation.id} style={{ marginBottom: 8, padding: 2, borderRadius: 4 }} elevation={2}>
@@ -82,7 +85,7 @@ export default function Chart() {
             </ScrollView>
           </View>
 
-          <View style={{ position: 'absolute', bottom: 16, left: 16 }}>
+          <View style={{ position: 'absolute', bottom: 16 + androidNavFabOffset, left: 16 }}>
             <FAB
               icon="arrow-left"
               size="small"

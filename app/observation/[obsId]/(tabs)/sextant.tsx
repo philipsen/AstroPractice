@@ -5,6 +5,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { FAB, Text, useTheme } from 'react-native-paper';
 import { GetSextantCorrections, SetObservationData } from '../../../../src/helpers/astron/init';
+import { useAndroidNavBarFabOffset } from '@/src/hooks/useAndroidNavBarFabOffset';
 import { useNightMode } from '../../../../src/state/NightModeContext';
 
 
@@ -12,6 +13,7 @@ export default function SextantCorrections() {
     const { setNightMode } = useNightMode();
     const { colors, dark } = useTheme();
     const router = useRouter();
+    const androidNavFabOffset = useAndroidNavBarFabOffset();
     const observation = useObservationStore((s) => s.observation);
     if (!observation) {
         return (
@@ -33,7 +35,7 @@ export default function SextantCorrections() {
                 data={data}
             />
             {/* FAB row: back and night mode side by side at bottom left */}
-            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: 0, zIndex: 101 }}>
+            <View style={{ position: 'absolute', flexDirection: 'row', left: 10, bottom: androidNavFabOffset, zIndex: 101 }}>
                 <FAB
                     icon="arrow-left"
                     style={{ margin: 16, backgroundColor: colors.surface }}
