@@ -1,8 +1,7 @@
 
 import { View } from "react-native";
 import { Divider, Switch, Text, useTheme } from "react-native-paper";
-import { Degs_f } from "../helpers/astron/Astron";
-import { effectiveObservationDateUtc } from "../helpers/astron/init";
+import { Degs_f, effectiveObservationDateUtc } from "../helpers/astron/init";
 import { SightReductionData } from "../models/SightReductionData";
 import { KVRow } from "./KVRow";
 

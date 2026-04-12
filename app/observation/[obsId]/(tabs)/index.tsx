@@ -5,8 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { FAB, Text, TextInput, useTheme } from "react-native-paper";
 
-import { BODY_NAMES } from "../../../../src/helpers/astron/Astron";
-
 import CelestialBodyPicker from '@/src/components/CelestialBodyPicker';
 import OptionSheetPicker from '@/src/components/OptionSheetPicker';
 import NSChoice from "@/src/components/NSChoice";
@@ -15,7 +13,7 @@ import UTCDateTimePicker from "@/src/components/UTCDateTimePicker";
 import { useObservationStore } from "@/src/state/useObservationStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { formatDeg } from "../../../../src/helpers/MinutesToDeg";
-import InitAstron, { GetBestFitObjects } from "../../../../src/helpers/astron/init";
+import InitAstron, { BODY_NAMES, GetBestFitObjects } from "../../../../src/helpers/astron/init";
 import { useNightMode } from '../../../../src/state/NightModeContext';
 export default function ObservationEdit() {
     const { setNightMode } = useNightMode();
