@@ -43,6 +43,18 @@ export async function newObservation(
   groupId: number,
   lastObservation: ObservationEntity | null,
 ) {
+  const defaults = {
+    angle: 0,
+    indexError: 0,
+    observerAltitude: 0,
+    limbType: 0,
+    horizon: 0,
+    object: "Sun",
+    latitude: 0,
+    longitude: 0,
+    delay: 0,
+  };
+
   return await db.runAsync(
     `INSERT INTO observations (groupId, created, 
             angle, indexError, observerAltitude, limbType, horizon, 
@@ -51,15 +63,15 @@ export async function newObservation(
     [
       groupId,
       new Date().toISOString(),
-      lastObservation?.angle ?? null,
-      lastObservation?.indexError ?? null,
-      lastObservation?.observerAltitude ?? null,
-      lastObservation?.limbType ?? null,
-      lastObservation?.horizon ?? null,
-      lastObservation?.object ?? null,
-      lastObservation?.latitude ?? null,
-      lastObservation?.longitude ?? null,
-      lastObservation?.delay ?? null,
+      lastObservation?.angle ?? defaults.angle,
+      lastObservation?.indexError ?? defaults.indexError,
+      lastObservation?.observerAltitude ?? defaults.observerAltitude,
+      lastObservation?.limbType ?? defaults.limbType,
+      lastObservation?.horizon ?? defaults.horizon,
+      lastObservation?.object ?? defaults.object,
+      lastObservation?.latitude ?? defaults.latitude,
+      lastObservation?.longitude ?? defaults.longitude,
+      lastObservation?.delay ?? defaults.delay,
     ],
   );
 }
