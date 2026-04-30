@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /** Target clearance (dp) above the physical bottom for classic 3-button nav. */
-const MIN_ANDROID_NAV_CLEARANCE = 60;
+const MIN_ANDROID_NAV_CLEARANCE = 78;
 
 /**
  * Extra `bottom` offset for absolute FABs on Android. Some devices report a
